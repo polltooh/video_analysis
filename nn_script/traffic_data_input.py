@@ -1,0 +1,113 @@
+from TensorflowToolbox.data_flow.data_input_abs import DataInputAbs
+from TensorflowToolbox.data_flow import data_reader
+from TensorflowToolbox.data_flow import data_class
+import tensorflow as tf
+import cv2
+import numpy as np
+
+class DataInput(DataInputAbs):
+	def __init__(self, model_params, is_train):
+		arg_dict_list = self.get_arg_dict_list(model_params)
+		self.is_train = is_train
+
+		if is_train:
+			file_name = model_params["train_file_name"]
+		else:
+			file_name = model_params["test_file_name"]
+
+		self.file_queue = data_reader.file_queue(file_name, is_train)
+		self.load_data(model_params, arg_dict_list)
+
+	def get_arg_dict_list(self, model_params):
+		data_arg_dict = dict()
+		label_arg_dict = dict()
+
+		for key in model_params:
+			if "data_arg" in key:
+				_, field = key.split(".")
+				data_arg_dict[field] = model_params[key]
+			if "label_arg" in key:
+				_, field = key.split(".")
+				label_arg_dict[field] = model_params[key]
+		arg_dict_list = [data_arg_dict, label_arg_dict]
+
+		return arg_dict_list
+
+	def get_label(self):
+		return self.label
+
+	def get_input(self):
+		return self.input
+
+	def get_file_line(self):
+		return self.file_line
+
+	def load_data(self, model_params, arg_dict):
+		input_class = data_class.DataClass(tf.constant([], tf.string))
+		input_class.decode_class= data_class.JPGClass(
+									shape = [model_params["feature_row"], 
+									model_params["feature_col"]], 
+									channels = model_params["feature_cha"],
+									off_set =  model_params["off_set"])
+		
+		label_class = data_class.DataClass(tf.constant([], tf.string))
+		label_class.decode_class = data_class.BINClass(
+									[model_params["label_row"], 
+									model_params["label_col"], 
+									model_params["label_cha"]])
+
+		tensor_list = [input_class] + [label_class]
+		batch_tensor_list = data_reader.file_queue_to_batch_data(
+							self.file_queue,
+            				tensor_list, self.is_train, 
+							model_params["batch_size"],
+							arg_dict)
+
+		self.input = batch_tensor_list[0]
+		self.label = batch_tensor_list[1]
+		self.file_line = batch_tensor_list[2]
+
+if __name__ == "__main__":
+	model_params = dict()
+	model_params["feature_row"] = 256
+	model_params["feature_col"] = 256
+	model_params["feature_cha"] = 3
+	model_params["off_set"] = 0
+
+	model_params["label_row"] = 256
+	model_params["label_col"] = 256
+	model_params["label_cha"] = 1
+
+	model_params["batch_size"] = 2
+
+	model_params["data_arg.rflip_leftright"] = True
+	model_params["label_arg.rflip_leftright"] = True
+
+	model_params["data_arg.rflip_updown"] = True
+	model_params["label_arg.rflip_updown"] = True
+
+	#model_params["data_arg.rcrop_size"] = [200, 200, 3]
+	#model_params["label_arg.rcrop_size"] = [200, 200, 1]
+
+
+	model_params["train_file_name"] = "../file_list/test_file2.txt"
+
+	#arg_dict_list = [data_arg_dict, label_arg_dict]
+
+	train_input = DataInput(model_params, True)
+
+	sess = tf.Session()
+	coord = tf.train.Coordinator()
+	threads = tf.train.start_queue_runners(coord=coord, sess = sess)
+
+	for i in range(100):
+		label_v, input_v, file_line_v = sess.run([train_input.get_label(), 
+			train_input.get_input(), train_input.get_file_line()])
+		combined = np.hstack((np.expand_dims(input_v[0][:,:,1], axis = 2), label_v[0]/255))
+		cv2.imshow("image", combined)
+		cv2.waitKey(0)
+		#print(file_line_v)
+	
+	coord.request_stop()
+	coord.join(threads)
+
