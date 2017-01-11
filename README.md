@@ -12,6 +12,9 @@ make sure it is in the python search path
 ###nn\_script
 This directory contains the code for defining and training the network
 
+train.py is the one training the network. The training parameter is
+specified in the model.tfproto file
+
 ###file\_list
 This directory contains the file\_list, which contains the path and the
 filename of training and testing file 
