@@ -5,7 +5,10 @@ Install Instruction:
 
 git clone https://github.com/polltooh/TensorflowToolbox.git
 
-make sure it is in the python search path
+make sure it is in the python search path. 
+
+Please notice that this github is still being developing. Therefore
+some of the interface may be changed.
 
 #Video Analysis
 
