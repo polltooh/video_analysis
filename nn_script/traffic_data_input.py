@@ -7,7 +7,7 @@ import numpy as np
 
 class DataInput(DataInputAbs):
 	def __init__(self, model_params, is_train):
-		arg_dict_list = self.get_arg_dict_list(model_params)
+		arg_dict = self.get_arg_dict(model_params)
 		self.is_train = is_train
 
 		if is_train:
@@ -16,22 +16,23 @@ class DataInput(DataInputAbs):
 			file_name = model_params["test_file_name"]
 
 		self.file_queue = data_reader.file_queue(file_name, is_train)
-		self.load_data(model_params, arg_dict_list)
+		self.load_data(model_params, arg_dict)
 
-	def get_arg_dict_list(self, model_params):
-		data_arg_dict = dict()
-		label_arg_dict = dict()
+	def get_arg_dict(self, model_params):
+		arg_dict = dict()
 
 		for key in model_params:
 			if "data_arg" in key:
 				_, field = key.split(".")
-				data_arg_dict[field] = model_params[key]
-			if "label_arg" in key:
-				_, field = key.split(".")
-				label_arg_dict[field] = model_params[key]
-		arg_dict_list = [data_arg_dict, label_arg_dict]
+				arg_dict[field] = model_params[key]
+		return arg_dict
 
-		return arg_dict_list
+			#if "label_arg" in key:
+			#	_, field = key.split(".")
+			#	label_arg_dict[field] = model_params[key]
+		#arg_dict = [data_arg_dict, label_arg_dict]
+
+		#return arg_dict_list
 
 	def get_label(self):
 		return self.label
@@ -68,6 +69,7 @@ class DataInput(DataInputAbs):
 		self.file_line = batch_tensor_list[2]
 
 if __name__ == "__main__":
+	""" example of running the code"""
 	model_params = dict()
 	model_params["feature_row"] = 256
 	model_params["feature_col"] = 256
@@ -81,12 +83,11 @@ if __name__ == "__main__":
 	model_params["batch_size"] = 2
 
 	model_params["data_arg.rflip_leftright"] = True
-	model_params["label_arg.rflip_leftright"] = True
+	model_params["data_arg.rflip_updown"] = False 
+	model_params["data_arg.rcrop_size"] = [200, 200]
 
-	model_params["data_arg.rflip_updown"] = True
-	model_params["label_arg.rflip_updown"] = True
-
-	#model_params["data_arg.rcrop_size"] = [200, 200, 3]
+	#model_params["label_arg.rflip_leftright"] = True
+	#model_params["label_arg.rflip_updown"] = True
 	#model_params["label_arg.rcrop_size"] = [200, 200, 1]
 
 
@@ -100,7 +101,7 @@ if __name__ == "__main__":
 	coord = tf.train.Coordinator()
 	threads = tf.train.start_queue_runners(coord=coord, sess = sess)
 
-	for i in range(100):
+	for i in range(10):
 		label_v, input_v, file_line_v = sess.run([train_input.get_label(), 
 			train_input.get_input(), train_input.get_file_line()])
 		combined = np.hstack((np.expand_dims(input_v[0][:,:,1], axis = 2), label_v[0]/255))

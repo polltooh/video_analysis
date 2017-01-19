@@ -6,9 +6,13 @@ off_set: 0
 label_row: 256
 label_col: 256
 label_cha: 1
+leaky_param:0.01
+weight_decay:0.0004
 
 data_arg.rflip_leftright: True
 label_arg.rflip_leftright: True
+data_arg.rcrop_size: [200, 200]
+label_arg.rcrop_size: [200, 200]
 
 train_file_name:../file_list/test_file2.txt
 test_file_name:../file_list/test_file2.txt
@@ -19,9 +23,6 @@ test_per_iter:10
 train_log_dir:logs/
 model_dir:models/
 restore_model:False
-
-leaky_param:0.01
-weight_decay:0.0004
 
 #st_len: 50
 #iheight: 64

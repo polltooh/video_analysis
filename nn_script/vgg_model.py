@@ -11,7 +11,6 @@ class Model(ModelAbs):
 
 	def model_infer(self, data_ph, model_params):
 		input_ph = data_ph.get_input()
-		#leaky_param = 0.01
 		leaky_param = model_params["leaky_param"]
 		wd = model_params["weight_decay"]
 
@@ -116,5 +115,6 @@ class Model(ModelAbs):
 	def get_l2_loss(self):
 		return self.l2_loss
 
+
 if __name__ == "__main__":
-	m = Model()
+	pass

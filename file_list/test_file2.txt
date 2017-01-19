@@ -1,1 +1,1 @@
-../file_list/traffic.jpg ../file_list/traffic_gray.npy
+../file_list/Lily1.jpg ../file_list/Lily_grep.npy
