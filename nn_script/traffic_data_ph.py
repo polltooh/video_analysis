@@ -4,21 +4,20 @@ import tensorflow as tf
 class DataPh(DataPhAbs):
 	def __init__(self, model_params):
 		self.input_ph = tf.placeholder(tf.float32, shape = [
-									model_params["batch_size"],
-									model_params["feature_row"],
-									model_params["feature_col"],
-									model_params["feature_cha"]],
-									name = "feature"	
-									)
+							model_params["batch_size"],
+							model_params["feature_ph_row"],
+							model_params["feature_ph_col"],
+							model_params["feature_cha"]],
+							name = "feature"	
+							)
 
 		self.label_ph = tf.placeholder(tf.float32, shape = [
-									model_params["batch_size"],
-									model_params["label_row"],
-									model_params["label_col"],
-									model_params["label_cha"]],
-									name = "label"	
-									)
-		
+							model_params["batch_size"],
+							model_params["label_ph_row"],
+							model_params["label_ph_col"],
+							model_params["label_cha"]],
+							name = "label"	
+							)
 	def get_label(self):
 		return self.label_ph
 	

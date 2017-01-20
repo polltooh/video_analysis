@@ -91,7 +91,7 @@ class Model(ModelAbs):
 		conv53_maxpool = mf.maxpool_2d_layer(conv53, [2,2], 
 				[2,2], "maxpool5")
 
-		self.out = tf.image.resize_images(conv53_maxpool, 256,256)
+		self.out = tf.image.resize_images(conv53_maxpool, 224, 224)
 
 		
 	def model_loss(self, data_ph, model_params):

@@ -47,13 +47,14 @@ class NetFlow(object):
 
 		for i in range(self.model_params["max_training_iter"]):
 			feed_dict = self.get_feed_dict(sess, is_train = True)
+			for key in feed_dict:
+				print(key)
+				print(feed_dict[key].shape)
 			_, l2_loss_v = sess.run([self.train_op, self.l2_loss], feed_dict)		
-			print(l2_loss_v)
 
 			if i % self.model_params["test_per_iter"] == 0:
 				feed_dict = self.get_feed_dict(sess, is_train = False)
 				l2_loss_v = sess.run(self.l2_loss, feed_dict)		
-				print(l2_loss_v)
-			exit(1)
+
 		coord.request_stop()
 		coord.join(threads)

@@ -1,18 +1,30 @@
+# batch size
 batch_size: 1
+
+# feature dimemtion for reading the image
 feature_row: 256
 feature_col: 256
 feature_cha: 3
+
+# the croped image dimention as the input for the network
+feature_ph_row: 224
+feature_ph_col: 224
+
 off_set: 0
 label_row: 256
 label_col: 256
+
+# the croped image size as the input for the network
+label_ph_row: 224
+label_ph_col: 224
+
 label_cha: 1
+
 leaky_param:0.01
 weight_decay:0.0004
 
 data_arg.rflip_leftright: True
-label_arg.rflip_leftright: True
-data_arg.rcrop_size: [200, 200]
-label_arg.rcrop_size: [200, 200]
+data_arg.rcrop_size: [224, 224]
 
 train_file_name:../file_list/test_file2.txt
 test_file_name:../file_list/test_file2.txt
