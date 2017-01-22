@@ -48,8 +48,7 @@ class DataInput(DataInputAbs):
 		input_class.decode_class= data_class.JPGClass(
 									shape = [model_params["feature_row"], 
 									model_params["feature_col"]], 
-									channels = model_params["feature_cha"],
-									off_set =  model_params["off_set"])
+									channels = model_params["feature_cha"])
 		
 		label_class = data_class.DataClass(tf.constant([], tf.string))
 		label_class.decode_class = data_class.BINClass(
@@ -74,7 +73,6 @@ if __name__ == "__main__":
 	model_params["feature_row"] = 256
 	model_params["feature_col"] = 256
 	model_params["feature_cha"] = 3
-	model_params["off_set"] = 0
 
 	model_params["label_row"] = 256
 	model_params["label_col"] = 256

@@ -29,8 +29,8 @@ data_arg.rcrop_size: [224, 224]
 train_file_name:../file_list/test_file2.txt
 test_file_name:../file_list/test_file2.txt
 
-init_learning_rate: 0.01
-max_training_iter:100
+init_learning_rate: 0.0001
+max_training_iter:10
 test_per_iter:10
 train_log_dir:logs/
 model_dir:models/
