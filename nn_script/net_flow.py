@@ -22,18 +22,21 @@ class NetFlow(object):
 	def get_feed_dict(self, sess, is_train):
 		feed_dict = dict()
 		if is_train:
-			input_v, label_v ,file_line_v = sess.run([
+			input_v, label_v ,mask_v, file_line_v = sess.run([
 									self.train_data_input.get_input(), 
 									self.train_data_input.get_label(),
+									self.train_data_input.get_mask(),
 									self.train_data_input.get_file_line()])
 		else:
-			input_v, label_v , file_line_v = sess.run([
+			input_v, label_v , mask_v, file_line_v = sess.run([
 									self.test_data_input.get_input(), 
 									self.test_data_input.get_label(),
+									self.test_data_input.get_mask(),
 									self.test_data_input.get_file_line()])
 
 		feed_dict[self.data_ph.get_input()] = input_v
 		feed_dict[self.data_ph.get_label()] = label_v
+		feed_dict[self.data_ph.get_mask()] = mask_v
 
 		return feed_dict
 		

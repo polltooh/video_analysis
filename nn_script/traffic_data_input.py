@@ -40,6 +40,9 @@ class DataInput(DataInputAbs):
 	def get_input(self):
 		return self.input
 
+	def get_mask(self):
+		return self.mask
+
 	def get_file_line(self):
 		return self.file_line
 
@@ -55,8 +58,14 @@ class DataInput(DataInputAbs):
 									[model_params["label_row"], 
 									model_params["label_col"], 
 									model_params["label_cha"]])
+		
+		mask_class = data_class.DataClass(tf.constant([], tf.string))
+		mask_class.decode_class = data_class.BINClass(
+									[model_params["mask_row"], 
+									model_params["mask_col"], 
+									model_params["mask_cha"]])
 
-		tensor_list = [input_class] + [label_class]
+		tensor_list = [input_class] + [label_class] + [mask_class]
 		batch_tensor_list = data_reader.file_queue_to_batch_data(
 							self.file_queue,
             				tensor_list, self.is_train, 
@@ -65,7 +74,8 @@ class DataInput(DataInputAbs):
 
 		self.input = batch_tensor_list[0]
 		self.label = batch_tensor_list[1]
-		self.file_line = batch_tensor_list[2]
+		self.mask = batch_tensor_list[2]
+		self.file_line = batch_tensor_list[3]
 
 if __name__ == "__main__":
 	""" example of running the code"""
@@ -77,6 +87,10 @@ if __name__ == "__main__":
 	model_params["label_row"] = 256
 	model_params["label_col"] = 256
 	model_params["label_cha"] = 1
+
+	model_params["mask_row"] = 256
+	model_params["mask_col"] = 256
+	model_params["mask_cha"] = 1
 
 	model_params["batch_size"] = 2
 

@@ -184,14 +184,19 @@ class Model(ModelAbs):
 	#	#deconv11 = mf.deconvolution_2d_layer(self.conv53_maxpool, 
 	#	#		[3, 3, 256, 512], [10,10], [b, 56, 56, 256], 'SAME', wd, 'deconv11')
 	#	#deconv11_relu = mf.add_leaky_relu(deconv11, leaky_param)
-		
+	def filter_mask(self, tensor, mask):
+		tensor = tensor * mask
+		return tensor
 		
 	def model_loss(self, data_ph, model_params):
 		label = data_ph.get_label()
+		mask = data_ph.get_mask()
 		#self.l2_loss = mf.l2_loss(self.out, label, "MEAN", "l2_loss")
 		#tf.add_to_collection("losses", self.l2_loss)
 		l2_loss_list = list()
 		for i, deconv in enumerate(self.deconv_list):
+			deconv = self.filter_mask(deconv, mask)
+			label = self.filter_mask(label, mask)
 			l2_loss = mf.l2_loss(deconv, label, "MEAN", "l2_loss_%d"%i)
 			l2_loss_list.append(l2_loss)
 			tf.add_to_collection("losses", l2_loss)
