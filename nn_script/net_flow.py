@@ -17,6 +17,7 @@ class NetFlow(object):
 		self.data_ph = DataPh(model_params)
 		self.model = Model(self.data_ph, model_params)
 		self.loss = self.model.get_loss()
+		self.l2_loss = self.model.get_l2_loss()
 		self.train_op = self.model.get_train_op()
 
 	def get_feed_dict(self, sess, is_train):
@@ -39,6 +40,18 @@ class NetFlow(object):
 		feed_dict[self.data_ph.get_mask()] = mask_v
 
 		return feed_dict
+
+	def check_feed_dict(self, feed_dict):
+		data_list = list()
+
+		for key in feed_dict:
+			data_list.append(feed_dict[key])
+
+		cv2.imshow("image", data_list[0][0])	
+		cv2.imshow("label", data_list[1][0] * 255)	
+		cv2.imshow("mask", data_list[2][0])	
+		cv2.waitKey(0)
+		
 		
 	def mainloop(self):
 		sess = tf.Session()
@@ -47,16 +60,24 @@ class NetFlow(object):
 
 		coord = tf.train.Coordinator()
 		threads = tf.train.start_queue_runners(coord=coord, sess = sess)
+		if self.load_train:
+			for i in range(self.model_params["max_training_iter"]):
+				feed_dict = self.get_feed_dict(sess, is_train = True)
+				#self.check_feed_dict(feed_dict)
 
-		for i in range(self.model_params["max_training_iter"]):
-			feed_dict = self.get_feed_dict(sess, is_train = True)
-			_, loss_v = sess.run([self.train_op, self.loss], feed_dict)		
-			print(loss_v)
+				_, loss_v = sess.run([self.train_op, self.loss], feed_dict)		
+				print("train loss: %.2f "%loss_v)
 
-			if i % self.model_params["test_per_iter"] == 0:
+				if i % self.model_params["test_per_iter"] == 0:
+					feed_dict = self.get_feed_dict(sess, is_train = False)
+					l2_loss_v = sess.run(self.l2_loss, feed_dict)		
+					print("test loss: %.2f"%l2_loss_v)
+		else:
+			for i in range(self.model_params["test_iter"]):
 				feed_dict = self.get_feed_dict(sess, is_train = False)
 				loss_v = sess.run(self.loss, feed_dict)		
 				print(loss_v)
+			
 
 		coord.request_stop()
 		coord.join(threads)
