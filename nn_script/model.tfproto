@@ -31,8 +31,8 @@ weight_decay:0.0004
 data_arg.rflip_leftright: True
 data_arg.rcrop_size: [224, 224]
 
-train_file_name:../file_list/test_file2.txt
-test_file_name:../file_list/test_file2.txt
+train_file_name:../file_list/train_list1.txt
+test_file_name:../file_list/test_list1.txt
 
 init_learning_rate: 0.0001
 max_training_iter:10
