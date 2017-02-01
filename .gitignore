@@ -1,0 +1,7 @@
+*.jpg
+*.npy
+*.pyc
+*.swp
+temp
+data
+
