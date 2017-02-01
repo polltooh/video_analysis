@@ -21,11 +21,19 @@ class DataInput(DataInputAbs):
 	def get_arg_dict(self, model_params):
 		arg_dict = dict()
 
+		arg_dict["feature"] = dict()
+		arg_dict["label"] = dict()
+		arg_dict["mask"] = dict()
+
 		for key in model_params:
 			if "data_arg" in key:
-				_, field = key.split(".")
-				arg_dict[field] = model_params[key]
-		return arg_dict
+				_, domain,field = key.split(".")
+				arg_dict[domain][field] = model_params[key]
+		arg_dict_list = list()
+		arg_dict_list.append(arg_dict["feature"])
+		arg_dict_list.append(arg_dict["label"])
+		arg_dict_list.append(arg_dict["mask"])
+		return arg_dict_list
 
 			#if "label_arg" in key:
 			#	_, field = key.split(".")

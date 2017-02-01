@@ -28,8 +28,21 @@ mask_cha: 1
 leaky_param:0.01
 weight_decay:0.0004
 
-data_arg.rflip_leftright: True
-data_arg.rcrop_size: [224, 224]
+data_arg.feature.rflip_leftright: True
+data_arg.feature.rcrop_size: [224, 224]
+data_arg.feature.rbright_max:0.2
+data_arg.feature.rcontrast_lower:0.5
+data_arg.feature.rcontrast_upper:1.5
+#data_arg.feature.rhue_max:0.2
+#data_arg.feature.rsat_upper:1.5
+#data_arg.feature.rsat_lower:0.5
+
+
+data_arg.label.rflip_leftright: True
+data_arg.label.rcrop_size: [224, 224]
+
+data_arg.mask.rflip_leftright: True
+data_arg.mask.rcrop_size: [224, 224]
 
 train_file_name:../file_list/train_list1.txt
 test_file_name:../file_list/test_list1.txt
