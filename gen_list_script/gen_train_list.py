@@ -1,14 +1,18 @@
 import os
 import random
 from TensorflowToolbox.utility import file_io
+import sys
 
 if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        data_dir = sys.argv[1]
+    else:
+        data_dir = "../data"
+
     file_list_dir = "../file_list/"
     data_ext = "_resize.jpg"
     label_ext = "_resize.desmap"
     mask_ext = "_msk_resize.npy"    
-
-    data_dir = "../data/"
 
     cam_dir_list = file_io.get_dir_list(data_dir)
     train_list = list()

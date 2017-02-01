@@ -30,9 +30,6 @@ if __name__ == "__main__":
 	else:
 		data_dir = "../data"
 
-	print(sys.argv[0])
-	print(data_dir)
-	exit(1)
 	cam_list = file_io.get_dir_list(data_dir)
 	for cam in cam_list:
 		print(cam)
