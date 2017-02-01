@@ -2,6 +2,8 @@
 *.npy
 *.pyc
 *.swp
+*.txt
+data_process_script/execute.sh
 temp
 data
 
