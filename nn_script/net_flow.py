@@ -1,6 +1,7 @@
 from traffic_data_ph import DataPh
 from traffic_data_input import DataInput
-from vgg_model import Model
+#from vgg_model import Model
+from vgg_atrous_model import Model
 import tensorflow as tf
 import cv2
 
