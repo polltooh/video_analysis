@@ -6,6 +6,7 @@ import xml.etree.ElementTree as ET
 import os
 import xmltodict
 from PIL import Image, ImageDraw
+import sys
 
 
 dsize = (256, 256)
@@ -128,7 +129,12 @@ def gen_mask_image(mask_pts):
 
 
 if __name__ == "__main__":
-    mask_dir_list = file_io.get_dir_list("../data")
+    if len(sys.argv) > 1:
+        data_dir = sys.argv[1]
+    else:
+        data_dir = "../data"
+    
+    mask_dir_list = file_io.get_dir_list(data_dir)
     for mask_dir in mask_dir_list:
         mask_list = file_io.get_listfile(mask_dir, ".msk")
         for mask in mask_list:

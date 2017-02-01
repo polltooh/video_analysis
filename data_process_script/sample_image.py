@@ -1,5 +1,6 @@
 from TensorflowToolbox.utility import file_io
 import os
+import sys
 
 
 def sample(avid_dir_list):
@@ -14,5 +15,8 @@ def sample(avid_dir_list):
 
 
 if __name__ == "__main__":
-	avid_dir_list = "../data"
-	sample(avid_dir_list)
+	if len(sys.argv) > 1:
+		data_dir = sys.argv[1]
+	else:
+		data_dir = "../data"
+	sample(data_dir)
