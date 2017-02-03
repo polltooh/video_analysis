@@ -13,7 +13,6 @@ def sample(avid_dir_list):
 			command = "ffmpeg -i " + avi + " " + image_dir + "/%06d.jpg"
 			os.system(command)
 
-
 if __name__ == "__main__":
 	if len(sys.argv) > 1:
 		data_dir = sys.argv[1]
