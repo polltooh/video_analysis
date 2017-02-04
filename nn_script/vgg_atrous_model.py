@@ -111,7 +111,7 @@ class Model(ModelAbs):
 		with tf.variable_scope(layer_name):
 			if w != desire_shape[0] or h != desire_shape[1]:
 				input_tensor = tf.image.resize_images(input_tensor, 
-								desire_shape[0], desire_shape[1])
+								[desire_shape[0], desire_shape[1]])
 
 			deconv = mf.deconvolution_2d_layer(input_tensor, 
 					[3, 3, output_channel, c],[1,1], 

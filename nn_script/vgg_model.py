@@ -147,11 +147,11 @@ class Model(ModelAbs):
 			max_h = max(h, max_h)
 			max_w = max(w, max_w)
 
-		hypercolumn = tf.image.resize_images(tensor_list[0], max_h, max_w)
+		hypercolumn = tf.image.resize_images(tensor_list[0], [max_h, max_w])
 
 		for i in range(num-1):
 			resized_tensor = tf.image.resize_images(tensor_list[i+1],
-							max_h, max_w)
+							[max_h, max_w])
 			hypercolumn = tf.concat(3, [hypercolumn, resized_tensor])
 
 		return hypercolumn
@@ -163,7 +163,7 @@ class Model(ModelAbs):
 		with tf.variable_scope(layer_name):
 			if w != desire_shape[0] or h != desire_shape[1]:
 				input_tensor = tf.image.resize_images(input_tensor, 
-								desire_shape[0], desire_shape[1])
+								[desire_shape[0], desire_shape[1]])
 
 			deconv = mf.deconvolution_2d_layer(input_tensor, 
 					[3, 3, output_channel, c],[1,1], 

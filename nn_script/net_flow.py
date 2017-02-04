@@ -1,7 +1,7 @@
 from traffic_data_ph import DataPh
 from traffic_data_input import DataInput
-#from vgg_model import Model
-from vgg_atrous_model import Model
+from vgg_model import Model
+#from vgg_atrous_model import Model
 import tensorflow as tf
 import cv2
 
@@ -56,7 +56,8 @@ class NetFlow(object):
 		
 	def mainloop(self):
 		sess = tf.Session()
-		init_op = tf.initialize_all_variables()
+		#init_op = tf.initialize_all_variables()
+		init_op = tf.global_variables_initializer()
 		sess.run(init_op)
 
 		coord = tf.train.Coordinator()
