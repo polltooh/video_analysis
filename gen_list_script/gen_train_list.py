@@ -17,6 +17,7 @@ if __name__ == "__main__":
     cam_dir_list = file_io.get_dir_list(data_dir)
     train_list = list()
     test_list = list()
+    full_file_list = list()
     for cam_dir in cam_dir_list:
         video_list = file_io.get_listfile(cam_dir, ".avi")
         
@@ -30,7 +31,7 @@ if __name__ == "__main__":
             data_list += curr_data_list
 
 
-        full_file_list = [d + " " + d.replace(data_ext, label_ext) + " " + m \
+        full_file_list += [d + " " + d.replace(data_ext, label_ext) + " " + m \
                         for d, m in zip(data_list, mask_list)]
 
         #partition = 0.7
