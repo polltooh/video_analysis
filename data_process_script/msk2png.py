@@ -6,6 +6,8 @@ import numpy as np
 from matplotlib import pyplot as plt
 from TensorflowToolbox.utility import file_io
 
+CV_VERSION = cv2.__version__.split(".")[0]
+
 def get_closed_curve(points):
     first = points[0]
     last = points[len(points)-1]
@@ -18,7 +20,10 @@ def get_closed_curve(points):
 def draw_curve(pic_name, points):
 	img = np.zeros((240,352,3), np.int32)
 	pts = np.array(points, np.int32)
-	img = cv2.fillPoly(img, [pts], (255,255,255))
+	if CV_VERSION == '2':
+		cv2.fillPoly(img, [pts], (255,255,255))
+	elif CV_VERSION == '3':
+		img = cv2.fillPoly(img, [pts], (255,255,255))
 	#cv2.imshow("image", img / 255)
 	#cv2.waitKey(0)
 	cv2.imwrite(pic_name, img)
