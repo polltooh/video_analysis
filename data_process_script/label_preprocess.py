@@ -107,7 +107,7 @@ def crop_image(image_name, mask_bbox, save_data = False):
     annot_name = image_name.replace(".jpg", ".xml")
     if not os.path.exists(annot_name):
         print(annot_name + " is not exist. " + image_name + " is removed")
-		os.remove(image_name)
+        os.remove(image_name)
         return
         
     density_map = get_density_map(annot_name, mask_coord)
