@@ -87,6 +87,7 @@ class Model(ModelAbs):
 
         hyper_list.append(atrous5)
 
+
         hypercolumn = self.pack_tensor_list(hyper_list)
 
         c_dimension = hypercolumn.get_shape().as_list()[3]
@@ -94,6 +95,11 @@ class Model(ModelAbs):
         conv6 = mf.add_leaky_relu(mf.convolution_2d_layer(
             hypercolumn, [1, 1, c_dimension, 1], [1, 1],
             "SAME", wd, "conv6"), leaky_param)
+
+        tf.add_to_collection("image_to_write", data_ph.get_input()[0])
+        tf.add_to_collection("image_to_write", data_ph.get_label()[0])
+        tf.add_to_collection("image_to_write", data_ph.get_mask()[0]) 
+        tf.add_to_collection("image_to_write", conv6[0]) 
 
         self.predict_list = list()
         self.predict_list.append(conv6)

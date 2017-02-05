@@ -49,10 +49,12 @@ test_file_name:../file_list/test_list1.txt
 
 init_learning_rate: 0.0001
 max_training_iter:10
-test_per_iter:10
+test_per_iter:50
+save_per_iter: 200
 train_log_dir:logs/
 model_dir:models/
 restore_model:False
+
 
 #st_len: 50
 #iheight: 64
