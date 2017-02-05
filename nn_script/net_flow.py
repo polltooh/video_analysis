@@ -100,8 +100,8 @@ class NetFlow(object):
                     print("i: %d, train_loss: %.4f, test loss: %.4f"%
                                 (i, loss_v, l2_loss_v))
                     self.sum_writer.add_summary(summ_v, i)
-                    sf.add_value_sum(self.summary_writer, loss_v, "train_loss")
-                    sf.add_value_sum(self.summary_writer, l2_loss_v, "test_loss")
+                    sf.add_value_sum(self.sum_writer, loss_v, "train_loss")
+                    sf.add_value_sum(self.sum_writer, l2_loss_v, "test_loss")
                 if i != 0 and (i % self.model_params["save_per_iter"] == 0 or \
                                 i == self.model_params["max_training_iter"] - 1):
                     sf.save_model(sess, saver, self.model_params["model_dir"], i)
