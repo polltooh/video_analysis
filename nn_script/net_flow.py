@@ -84,7 +84,6 @@ class NetFlow(object):
     def mainloop(self):
         sess = tf.Session()
         self.init_var(sess)
-        exit(1)
         coord = tf.train.Coordinator()
         threads = tf.train.start_queue_runners(coord=coord, sess=sess)
         if self.load_train:
