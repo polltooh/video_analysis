@@ -84,7 +84,7 @@ class NetFlow(object):
     def mainloop(self):
         sess = tf.Session()
         self.init_var()
-       
+        exit(1) 
         coord = tf.train.Coordinator()
         threads = tf.train.start_queue_runners(coord=coord, sess=sess)
         if self.load_train:
@@ -104,7 +104,7 @@ class NetFlow(object):
                     sf.add_value_sum(self.summary_writer, loss_v, "train_loss")
                     sf.add_value_sum(self.summary_writer, l2_loss_v, "test_loss")
                 if i != 0 and (i % self.model_params["save_per_iter"] == 0 or \
-                                i == self.model_params["max_training_iter"])
+                                i == self.model_params["max_training_iter"] - 1):
                     sf.save_model(sess, saver, self.model_params["model_dir"], i)
                     
         else:
