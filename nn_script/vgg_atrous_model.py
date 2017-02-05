@@ -96,10 +96,10 @@ class Model(ModelAbs):
             hypercolumn, [1, 1, c_dimension, 1], [1, 1],
             "SAME", wd, "conv6"), leaky_param)
 
-        tf.add_to_collection("image_to_write", data_ph.get_input()[0])
-        tf.add_to_collection("image_to_write", data_ph.get_label()[0])
-        tf.add_to_collection("image_to_write", data_ph.get_mask()[0]) 
-        tf.add_to_collection("image_to_write", conv6[0]) 
+        tf.add_to_collection("image_to_write", data_ph.get_input())
+        tf.add_to_collection("image_to_write", data_ph.get_label())
+        tf.add_to_collection("image_to_write", data_ph.get_mask()) 
+        tf.add_to_collection("image_to_write", conv6) 
 
         self.predict_list = list()
         self.predict_list.append(conv6)

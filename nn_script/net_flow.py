@@ -1,7 +1,7 @@
 from traffic_data_ph import DataPh
 from traffic_data_input import DataInput
-from vgg_model import Model
-# from vgg_atrous_model import Model
+#from vgg_model import Model
+from vgg_atrous_model import Model
 import tensorflow as tf
 from TensorflowToolbox.model_flow import save_func as sf
 import cv2
@@ -69,7 +69,6 @@ class NetFlow(object):
         sf.add_train_var()
         sf.add_loss()
         sf.add_image("image_to_write")
-
         self.sum_writer = tf.summary.FileWriter(self.model_params["train_log_dir"], 
                                                 sess.graph)
         self.saver = tf.train.Saver()
