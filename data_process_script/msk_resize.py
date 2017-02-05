@@ -19,12 +19,12 @@ if __name__ == "__main__":
             mask_img_name = mask.replace("msk", "png")
             mask_img = cv2.imread(mask_img_name, 0)
             bbox = image_utility_func.get_bbox(mask_img, 127)
-            mask_img = mask_img[bbox[1]: bbox[1] + bbox[3], 
-                        bbox[0] : bbox[0] + bbox[2]]
+            mask_img = mask_img[bbox[1]: bbox[1] + bbox[3],
+                       bbox[0]: bbox[0] + bbox[2]]
             mask_img = cv2.resize(mask_img, dsize)
-            mask_img = mask_img/255
+            mask_img = mask_img / 255
             mask_img = mask_img.astype(np.float32)
             mask_img[mask_img > 0] = 1.0
             np_name = mask_img_name.replace(".png", "_msk_resize.npy")
-            
+
             mask_img.tofile(np_name)

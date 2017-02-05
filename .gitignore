@@ -7,3 +7,6 @@ data_process_script/execute.sh
 temp
 data
 
+.DS_Store
+.idea
+
