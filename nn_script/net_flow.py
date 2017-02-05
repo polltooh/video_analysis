@@ -99,7 +99,7 @@ class NetFlow(object):
                     l2_loss_v = sess.run(self.l2_loss, feed_dict)
                     print("i: %d, train_loss: %.4f, test loss: %.4f"%
                                 (i, loss_v, l2_loss_v))
-                    self.sum_sriter.add_summary(summ_v, i)
+                    self.sum_writer.add_summary(summ_v, i)
                     sf.add_value_sum(self.summary_writer, loss_v, "train_loss")
                     sf.add_value_sum(self.summary_writer, l2_loss_v, "test_loss")
                 if i != 0 and (i % self.model_params["save_per_iter"] == 0 or \
