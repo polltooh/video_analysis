@@ -70,10 +70,10 @@ class NetFlow(object):
         sf.add_loss()
         sf.add_image("image_to_write")
 
-        self.sum_writer = tf.train.SummaryWriter(self.model_params["train_log_dir"], 
+        self.sum_writer = tf.summary.FileWriter(self.model_params["train_log_dir"], 
                                                 sess.graph)
         self.saver = tf.train.Saver()
-        self.summ = tf.merge_all_summaries()
+        self.summ = tf.summary.merge_all()
 
         init_op = tf.global_variables_initializer()
         sess.run(init_op)
@@ -83,8 +83,8 @@ class NetFlow(object):
 
     def mainloop(self):
         sess = tf.Session()
-        self.init_var()
-        exit(1) 
+        self.init_var(sess)
+        exit(1)
         coord = tf.train.Coordinator()
         threads = tf.train.start_queue_runners(coord=coord, sess=sess)
         if self.load_train:
