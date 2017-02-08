@@ -7,6 +7,7 @@ import tensorflow as tf
 from TensorflowToolbox.model_flow import save_func as sf
 import cv2
 
+TF_VERSION = tf.__version__.split(".")[1]
 
 class NetFlow(object):
     def __init__(self, model_params, load_train, load_test):
@@ -79,7 +80,11 @@ class NetFlow(object):
         self.saver = tf.train.Saver()
         self.summ = tf.summary.merge_all()
 
-        init_op = tf.global_variables_initializer()
+        if TF_VERSION > '11':
+            init_op = tf.global_variables_initializer()
+        else:
+            init_op = tf.initialize_all_variables()
+
         sess.run(init_op)
 
         if self.model_params["restore_model"]:
