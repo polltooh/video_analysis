@@ -1,7 +1,7 @@
 from traffic_data_ph import DataPh
 from traffic_data_input import DataInput
 #from vgg_model import Model
-from vgg_atrous_model import Model
+from vgg_atrous_model2 import Model
 import tensorflow as tf
 from TensorflowToolbox.model_flow import save_func as sf
 import cv2
