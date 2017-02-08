@@ -1,7 +1,8 @@
 from traffic_data_ph import DataPh
 from traffic_data_input import DataInput
 #from vgg_model import Model
-from vgg_atrous_model2 import Model
+#from vgg_atrous_model2 import Model
+from TensorflowToolbox.utility import file_io
 import tensorflow as tf
 from TensorflowToolbox.model_flow import save_func as sf
 import cv2
@@ -9,6 +10,7 @@ import cv2
 
 class NetFlow(object):
     def __init__(self, model_params, load_train, load_test):
+        
         self.load_train = load_train
         self.load_test = load_test
         self.model_params = model_params
@@ -20,6 +22,9 @@ class NetFlow(object):
             self.test_data_input = DataInput(model_params, is_train=False)
 
         self.data_ph = DataPh(model_params)
+        Model = file_io.import_module_class(model_params["model_def_name"],
+                        "Model")
+
         self.model = Model(self.data_ph, model_params)
         self.loss = self.model.get_loss()
         self.l2_loss = self.model.get_l2_loss()
