@@ -1,19 +1,19 @@
 # batch size
 batch_size: 1
 
-# feature dimemtion for reading the image
+# feature dimension for reading the image
 feature_row: 256
 feature_col: 256
 feature_ph_row: 224
 feature_ph_col: 224
 feature_cha: 3
 
-# the croped image dimention as the input for the network
+# the cropped image dimension as the input for the network
 
 label_row: 256
 label_col: 256
 
-# the croped image size as the input for the network
+# the cropped image size as the input for the network
 label_ph_row: 224
 label_ph_col: 224
 
