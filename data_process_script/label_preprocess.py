@@ -139,8 +139,7 @@ if __name__ == "__main__":
     else:
         data_dir = "../data"
 
-    # mask_dir_list = file_io.get_dir_list(data_dir)
-    mask_dir_list = ['../data/253']
+    mask_dir_list = file_io.get_dir_list(data_dir)
 
     for mask_dir in mask_dir_list:
         mask_list = file_io.get_listfile(mask_dir, ".msk")
