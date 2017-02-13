@@ -9,6 +9,7 @@ import cv2
 
 TF_VERSION = tf.__version__.split(".")[1]
 
+
 class NetFlow(object):
     def __init__(self, model_params, load_train, load_test):
         

@@ -47,7 +47,7 @@ data_arg.mask.rcrop_size: [224, 224]
 train_file_name:../file_list/train_list1.txt
 test_file_name:../file_list/test_list1.txt
 
-model_def_name: vgg_atrous_model2.py
+model_def_name: vgg_atrous_model2
 
 init_learning_rate: 0.0001
 max_training_iter:10
