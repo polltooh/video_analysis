@@ -56,6 +56,7 @@ save_per_iter: 200
 train_log_dir:logs/
 model_dir:models/
 restore_model:False
+restore_mode_name:None
 
 
 #st_len: 50

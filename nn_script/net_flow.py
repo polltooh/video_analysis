@@ -92,7 +92,8 @@ class NetFlow(object):
         sess.run(init_op)
 
         if self.model_params["restore_model"]:
-            sf.restore_model(sess, self.saver, self.model_params["model_dir"])
+            sf.restore_model(sess, self.saver, self.model_params["model_dir"],
+                            self.model_params["restore_model_name"])
 
     def mainloop(self):
         sess = tf.Session()
