@@ -75,14 +75,16 @@ class NetFlow(object):
         sf.add_train_var()
         sf.add_loss()
         sf.add_image("image_to_write")
-        self.sum_writer = tf.summary.FileWriter(self.model_params["train_log_dir"], 
-                                                sess.graph)
         self.saver = tf.train.Saver()
-        self.summ = tf.summary.merge_all()
 
         if TF_VERSION > '11':
+            self.sum_writer = tf.summary.FileWriter(self.model_params["train_log_dir"], 
+            self.summ = tf.summary.merge_all()
             init_op = tf.global_variables_initializer()
         else:
+            self.sum_writer = tf.train.SummaryWritter(self.model_params["train_log_dir"], 
+                                         sess.graph)
+            self.summ = tf.merge_all_summaries()
             init_op = tf.initialize_all_variables()
 
         sess.run(init_op)
