@@ -10,3 +10,5 @@ data
 .DS_Store
 .idea
 model.tfproto
+logs/
+models/
