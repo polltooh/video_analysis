@@ -1,7 +1,7 @@
 from traffic_data_ph import DataPh
 from traffic_data_input import DataInput
-#from vgg_model import Model
-#from vgg_atrous_model2 import Model
+# from vgg_model import Model
+# from vgg_atrous_model2 import Model
 from TensorflowToolbox.utility import file_io
 import tensorflow as tf
 from TensorflowToolbox.model_flow import save_func as sf
@@ -24,21 +24,21 @@ class NetFlow(object):
             self.test_data_input = DataInput(model_params, is_train=False)
 
         self.data_ph = DataPh(model_params)
-        Model = file_io.import_module_class(model_params["model_def_name"],
-                        "Model")
+        model = file_io.import_module_class(model_params["model_def_name"],
+                                            "Model")
 
-        self.model = Model(self.data_ph, model_params)
+        self.model = model(self.data_ph, model_params)
         self.loss = self.model.get_loss()
         self.l2_loss = self.model.get_l2_loss()
         self.train_op = self.model.get_train_op()
 
-    def check_model_params(self, model_params):
+    @staticmethod
+    def check_model_params(model_params):
         field_list = ["restore_model", "model_dir", "max_training_iter",
-                    "train_log_dir", "test_per_iter", "save_per_iter"]
+                      "train_log_dir", "test_per_iter", "save_per_iter"]
 
         for field in field_list:
             assert(field in model_params)
-
 
     def get_feed_dict(self, sess, is_train):
         feed_dict = dict()
@@ -61,7 +61,8 @@ class NetFlow(object):
 
         return feed_dict
 
-    def check_feed_dict(self, feed_dict):
+    @staticmethod
+    def check_feed_dict(feed_dict):
         data_list = list()
 
         for key in feed_dict:
@@ -99,7 +100,7 @@ class NetFlow(object):
         if self.load_train:
             for i in range(self.model_params["max_training_iter"]):
                 feed_dict = self.get_feed_dict(sess, is_train=True)
-                #self.check_feed_dict(feed_dict)
+                # self.check_feed_dict(feed_dict)
 
                 _, loss_v, summ_v = sess.run([self.train_op, 
                                     self.loss, self.summ], feed_dict)
