@@ -26,8 +26,7 @@ class NetFlow(object):
         self.data_ph = DataPh(model_params)
         model = file_io.import_module_class(model_params["model_def_name"],
                                             "DeepLabLFOVModel")
-        self.model = model(model_params, self.data_ph,
-                           model_params["restore_path"])
+        self.model = model(model_params, self.data_ph)
         self.loss = self.model.get_loss()
         self.l2_loss = self.model.get_l2_loss()
         self.train_op = self.model.get_train_op()
@@ -74,9 +73,11 @@ class NetFlow(object):
         cv2.waitKey(0)
 
     def init_var(self, sess):
-        sf.add_train_var()
-        sf.add_loss()
-        sf.add_image("image_to_write")
+        if TF_VERSION > '11':
+            sf.add_train_var()
+            sf.add_loss()
+            sf.add_image("image_to_write")
+
         self.saver = tf.train.Saver()
 
         if TF_VERSION > '11':
@@ -85,7 +86,7 @@ class NetFlow(object):
             self.summ = tf.summary.merge_all()
             init_op = tf.global_variables_initializer()
         else:
-            self.sum_writer = tf.train.SummaryWritter(self.model_params["train_log_dir"], 
+            self.sum_writer = tf.train.SummaryWriter(self.model_params["train_log_dir"],
                                          sess.graph)
             self.summ = tf.merge_all_summaries()
             init_op = tf.initialize_all_variables()
@@ -101,6 +102,11 @@ class NetFlow(object):
         self.init_var(sess)
         coord = tf.train.Coordinator()
         threads = tf.train.start_queue_runners(coord=coord, sess=sess)
+
+        # Restore model
+        # if self.model_params["restore_path"] is not None:
+        #    self.saver.restore(sess, self.model_params["restore_path"])
+
         if self.load_train:
             for i in range(self.model_params["max_training_iter"]):
                 feed_dict = self.get_feed_dict(sess, is_train=True)
