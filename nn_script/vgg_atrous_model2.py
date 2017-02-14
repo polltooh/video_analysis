@@ -162,7 +162,7 @@ class Model(ModelAbs):
         for i, deconv in enumerate(self.predict_list):
             deconv = self.filter_mask(deconv, mask)
             label = self.filter_mask(label, mask)
-            l2_loss = mf.l2_loss(deconv, label, "MEAN", "l2_loss_%d" % i)
+            l2_loss = mf.image_l2_loss(deconv, label, "MEAN", "l2_loss_%d" % i)
             l2_loss_list.append(l2_loss)
             tf.add_to_collection("losses", l2_loss)
 
