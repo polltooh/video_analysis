@@ -6,6 +6,7 @@ from TensorflowToolbox.utility import file_io
 import tensorflow as tf
 from TensorflowToolbox.model_flow import save_func as sf
 import cv2
+import os
 
 TF_VERSION = tf.__version__.split(".")[1]
 
@@ -103,10 +104,6 @@ class NetFlow(object):
         coord = tf.train.Coordinator()
         threads = tf.train.start_queue_runners(coord=coord, sess=sess)
 
-        # Restore model
-        # if self.model_params["restore_path"] is not None:
-        #    self.saver.restore(sess, self.model_params["restore_path"])
-
         if self.load_train:
             for i in range(self.model_params["max_training_iter"]):
                 feed_dict = self.get_feed_dict(sess, is_train=True)
@@ -118,14 +115,17 @@ class NetFlow(object):
                 if i % self.model_params["test_per_iter"] == 0:
                     feed_dict = self.get_feed_dict(sess, is_train=False)
                     l2_loss_v = sess.run(self.l2_loss, feed_dict)
-                    print("i: %d, train_loss: %.4f, test loss: %.4f"%
-                                (i, loss_v, l2_loss_v))
+                    print("i: %d, train_loss: %.4f, test loss: %.4f" %
+                          (i, loss_v, l2_loss_v))
                     self.sum_writer.add_summary(summ_v, i)
                     sf.add_value_sum(self.sum_writer, loss_v, "train_loss", i)
                     sf.add_value_sum(self.sum_writer, l2_loss_v, "test_loss", i)
                 if i != 0 and (i % self.model_params["save_per_iter"] == 0 or \
                                 i == self.model_params["max_training_iter"] - 1):
-                    sf.save_model(sess, self.saver, self.model_params["model_dir"], i)
+                    sf.save_model(sess, self.saver,
+                                  os.path.join(self.model_params["model_dir"],
+                                               self.model_params["model_name"]),
+                                  i)
                     
         else:
             for i in range(self.model_params["test_iter"]):
