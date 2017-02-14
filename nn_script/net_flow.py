@@ -25,9 +25,9 @@ class NetFlow(object):
 
         self.data_ph = DataPh(model_params)
         model = file_io.import_module_class(model_params["model_def_name"],
-                                            "Model")
-
-        self.model = model(self.data_ph, model_params)
+                                            "DeepLabLFOVModel")
+        self.model = model(model_params, self.data_ph,
+                           model_params["restore_path"])
         self.loss = self.model.get_loss()
         self.l2_loss = self.model.get_l2_loss()
         self.train_op = self.model.get_train_op()

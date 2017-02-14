@@ -65,12 +65,16 @@ class DeepLabLFOVModel(object):
         Args:
           weights_path: the path to the cpkt file with dictionary of weights from .caffemodel.
         """
+        self.data_ph = data_ph
+        input_ph = self.data_ph.get_input()
+
         self.model_params = model_params
         self.variables = self._create_variables(weights_path)
-        self.raw_output = self._create_network(data_ph,
+        self.raw_output = self._create_network(input_ph,
                                                keep_prob=tf.constant(0.5))
-        self.l2_loss = self.reg_loss(data_ph)
-        self.train_op = None
+        # Generate regression loss and train op
+        self.reg_loss()
+        self.model_mini()
 
     @staticmethod
     def _create_variables(weights_path):
@@ -107,8 +111,8 @@ class DeepLabLFOVModel(object):
                     var.append(b)
         return var
 
-    def _create_network(self, data_ph, keep_prob):
-        current = data_ph
+    def _create_network(self, input_ph, keep_prob):
+        current = input_ph
 
         v_idx = 0  # Index variable.
 
@@ -151,7 +155,7 @@ class DeepLabLFOVModel(object):
         # TODO: change to a regression layer, shape now (batch, w/8, h/8, 1024)
         # Up-sample
         current = tf.image.resize_bilinear(current,
-                                           tf.shape(data_ph)[1:3])
+                                           tf.shape(input_ph)[1:3])
         current = mf.convolution_2d_layer(current, [1, 1, 1024, 1], [1, 1],
                                           "SAME",
                                           wd=self.model_params["weight_decay"],
@@ -163,28 +167,27 @@ class DeepLabLFOVModel(object):
         tensor = tensor * mask
         return tensor
 
-    def reg_loss(self, data_ph):
-        label = data_ph.get_label()
-        mask = data_ph.get_mask()
+    def reg_loss(self):
+        label = self.data_ph.get_label()
+        mask = self.data_ph.get_mask()
 
-        raw_output = self.filter_mask(self.raw_output, mask)
-        label = self.filter_mask(label, mask)
-        l2_loss = mf.l2_loss(raw_output, label, "MEAN", "l2_loss")
-        return l2_loss
+        raw_output = self.filter_mask(self.raw_output, mask)  # mask output
+        label = self.filter_mask(label, mask)                 # mask label
+        self.l2_loss = mf.l2_loss(raw_output, label, "MEAN", "l2_loss")
 
     # Add APIs
-    def get_train_op(self):
+    def model_mini(self):
         optimizer = tf.train.AdamOptimizer(
             self.model_params["init_learning_rate"],
             epsilon=1.0)
         self.train_op = optimizer.minimize(self.l2_loss)
+
+    def get_train_op(self):
         return self.train_op
 
-    def get_loss(self):
-        pass
-
-
     def get_l2_loss(self):
-        pass
+        return self.l2_loss
 
+    def get_loss(self):
+        return self.l2_loss
 
