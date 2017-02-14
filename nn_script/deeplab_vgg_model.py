@@ -73,8 +73,8 @@ class DeepLabLFOVModel(object):
         self.raw_output = self._create_network(input_ph,
                                                keep_prob=tf.constant(0.5))
         # Generate regression loss and train op
-        self.model_mini()
         self.reg_loss()
+        self.model_mini()
 
     @staticmethod
     def _create_variables(weights_path):
