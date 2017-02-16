@@ -45,9 +45,13 @@ if __name__ == "__main__":
         #test_list += [d + " " + d.replace(data_ext, label_ext) for d in test_data]
 
     train_file_list_name = 'train_list1.txt'
-    file_io.save_file(full_file_list, file_list_dir + train_file_list_name, True)
+    train_len = int(len(full_file_list) * 0.7)
+
+    train_file_list = full_file_list[:train_len]
+    file_io.save_file(train_file_list, file_list_dir + train_file_list_name, True)
 
     test_file_list_name = 'test_list1.txt'
-    file_io.save_file(full_file_list, file_list_dir + test_file_list_name, True)
+    test_file_list = full_file_list[train_len:]
+    file_io.save_file(test_file_list, file_list_dir + test_file_list_name, True)
 
 
