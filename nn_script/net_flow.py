@@ -7,6 +7,7 @@ import tensorflow as tf
 from TensorflowToolbox.model_flow import save_func as sf
 import cv2
 import numpy as np
+import os
 
 TF_VERSION = tf.__version__.split(".")[1]
 
@@ -26,9 +27,8 @@ class NetFlow(object):
 
         self.data_ph = DataPh(model_params)
         model = file_io.import_module_class(model_params["model_def_name"],
-                                            "Model")
-
-        self.model = model(self.data_ph, model_params)
+                                            "DeepLabLFOVModel")
+        self.model = model(model_params, self.data_ph)
         self.loss = self.model.get_loss()
         self.l2_loss = self.model.get_l2_loss()
         self.train_op = self.model.get_train_op()
@@ -76,9 +76,11 @@ class NetFlow(object):
         #cv2.waitKey(0)
 
     def init_var(self, sess):
-        sf.add_train_var()
-        sf.add_loss()
-        sf.add_image("image_to_write")
+        if TF_VERSION > '11':
+            sf.add_train_var()
+            sf.add_loss()
+            sf.add_image("image_to_write")
+
         self.saver = tf.train.Saver()
 
         if TF_VERSION > '11':
@@ -87,7 +89,7 @@ class NetFlow(object):
             self.summ = tf.summary.merge_all()
             init_op = tf.global_variables_initializer()
         else:
-            self.sum_writer = tf.train.SummaryWritter(self.model_params["train_log_dir"], 
+            self.sum_writer = tf.train.SummaryWriter(self.model_params["train_log_dir"],
                                          sess.graph)
             self.summ = tf.merge_all_summaries()
             init_op = tf.initialize_all_variables()
@@ -103,6 +105,7 @@ class NetFlow(object):
         self.init_var(sess)
         coord = tf.train.Coordinator()
         threads = tf.train.start_queue_runners(coord=coord, sess=sess)
+
         if self.load_train:
             for i in range(self.model_params["max_training_iter"]):
                 feed_dict = self.get_feed_dict(sess, is_train=True)
@@ -115,14 +118,17 @@ class NetFlow(object):
                 if i % self.model_params["test_per_iter"] == 0:
                     feed_dict = self.get_feed_dict(sess, is_train=False)
                     l2_loss_v = sess.run(self.l2_loss, feed_dict)
-                    print("i: %d, train_loss: %.4f, test loss: %.4f"%
-                                (i, loss_v, l2_loss_v))
+                    print("i: %d, train_loss: %.4f, test loss: %.4f" %
+                          (i, loss_v, l2_loss_v))
                     self.sum_writer.add_summary(summ_v, i)
                     sf.add_value_sum(self.sum_writer, loss_v, "train_loss", i)
                     sf.add_value_sum(self.sum_writer, l2_loss_v, "test_loss", i)
                 if i != 0 and (i % self.model_params["save_per_iter"] == 0 or \
                                 i == self.model_params["max_training_iter"] - 1):
-                    sf.save_model(sess, self.saver, self.model_params["model_dir"], i)
+                    sf.save_model(sess, self.saver,
+                                  os.path.join(self.model_params["model_dir"],
+                                               self.model_params["model_name"]),
+                                  i)
                     
         else:
             for i in range(self.model_params["test_iter"]):
