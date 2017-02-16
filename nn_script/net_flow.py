@@ -6,6 +6,7 @@ from TensorflowToolbox.utility import file_io
 import tensorflow as tf
 from TensorflowToolbox.model_flow import save_func as sf
 import cv2
+import numpy as np
 
 TF_VERSION = tf.__version__.split(".")[1]
 
@@ -67,11 +68,12 @@ class NetFlow(object):
 
         for key in feed_dict:
             data_list.append(feed_dict[key])
-
-        cv2.imshow("image", data_list[0][0])
-        cv2.imshow("label", data_list[1][0] * 255)
-        cv2.imshow("mask", data_list[2][0])
-        cv2.waitKey(0)
+        print(np.sum(data_list[1][0] > 0.1))
+        print(data_list[1][0].max())
+        #cv2.imshow("image", data_list[0][0])
+        #cv2.imshow("label", data_list[1][0] * 255)
+        #cv2.imshow("mask", data_list[2][0])
+        #cv2.waitKey(0)
 
     def init_var(self, sess):
         sf.add_train_var()
@@ -104,7 +106,8 @@ class NetFlow(object):
         if self.load_train:
             for i in range(self.model_params["max_training_iter"]):
                 feed_dict = self.get_feed_dict(sess, is_train=True)
-                # self.check_feed_dict(feed_dict)
+                self.check_feed_dict(feed_dict)
+                continue
 
                 _, loss_v, summ_v = sess.run([self.train_op, 
                                     self.loss, self.summ], feed_dict)
