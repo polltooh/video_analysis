@@ -5,6 +5,7 @@ from traffic_data_input import DataInput
 from TensorflowToolbox.utility import file_io
 import tensorflow as tf
 from TensorflowToolbox.model_flow import save_func as sf
+from TensorflowToolbox.utility import utility_func as uf 
 import cv2
 import numpy as np
 import os
@@ -27,7 +28,7 @@ class NetFlow(object):
 
         self.data_ph = DataPh(model_params)
         model = file_io.import_module_class(model_params["model_def_name"],
-                                            "DeepLabLFOVModel")
+                                            "Model")
         self.model = model(model_params, self.data_ph)
         self.loss = self.model.get_loss()
         self.l2_loss = self.model.get_l2_loss()
@@ -76,10 +77,9 @@ class NetFlow(object):
         #cv2.waitKey(0)
 
     def init_var(self, sess):
-        if TF_VERSION > '11':
-            sf.add_train_var()
-            sf.add_loss()
-            sf.add_image("image_to_write")
+        sf.add_train_var()
+        sf.add_loss()
+        sf.add_image("image_to_write")
 
         self.saver = tf.train.Saver()
 
@@ -101,7 +101,8 @@ class NetFlow(object):
                             self.model_params["restore_model_name"])
 
     def mainloop(self):
-        sess = tf.Session()
+        config_proto = uf.define_graph_config(self.model_params["gpu_fraction"])
+        sess = tf.Session(config = config_proto)
         self.init_var(sess)
         coord = tf.train.Coordinator()
         threads = tf.train.start_queue_runners(coord=coord, sess=sess)
