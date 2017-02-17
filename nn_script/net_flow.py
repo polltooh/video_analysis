@@ -109,15 +109,14 @@ class NetFlow(object):
         if self.load_train:
             for i in range(self.model_params["max_training_iter"]):
                 feed_dict = self.get_feed_dict(sess, is_train=True)
-                self.check_feed_dict(feed_dict)
-                continue
+                #self.check_feed_dict(feed_dict)
 
-                _, loss_v, summ_v = sess.run([self.train_op, 
-                                    self.loss, self.summ], feed_dict)
+                _, loss_v = sess.run([self.train_op, 
+                                    self.loss], feed_dict)
 
                 if i % self.model_params["test_per_iter"] == 0:
                     feed_dict = self.get_feed_dict(sess, is_train=False)
-                    l2_loss_v = sess.run(self.l2_loss, feed_dict)
+                    l2_loss_v, summ_v = sess.run([self.l2_loss, self.summ], feed_dict)
                     print("i: %d, train_loss: %.4f, test loss: %.4f" %
                           (i, loss_v, l2_loss_v))
                     self.sum_writer.add_summary(summ_v, i)
