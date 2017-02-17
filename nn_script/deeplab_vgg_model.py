@@ -59,7 +59,7 @@ class DeepLabLFOVModel(object):
     there for details.
     """
 
-    def __init__(self, model_params, data_ph, weights_path=None):
+    def __init__(self, data_ph, model_params, weights_path=None):
         """Create the model.
 
         Args:
