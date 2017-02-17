@@ -58,7 +58,7 @@ class NetFlow(object):
                 self.test_data_input.get_file_line()])
 
         feed_dict[self.data_ph.get_input()] = input_v
-        feed_dict[self.data_ph.get_label()] = label_v
+        feed_dict[self.data_ph.get_label()] = label_v * 100
         feed_dict[self.data_ph.get_mask()] = mask_v
 
         return feed_dict
@@ -79,8 +79,7 @@ class NetFlow(object):
     def init_var(self, sess):
         sf.add_train_var()
         sf.add_loss()
-        sf.add_image("image_to_write")
-
+        sf.add_image("image_to_write", 4)
         self.saver = tf.train.Saver()
 
         if TF_VERSION > '11':
