@@ -40,5 +40,5 @@ This directory contains the scipt which used in generating the file\_list.
 This directory contains the script which used in processing.
 
 ### net work structure:
-![vgg atrous 2 graph](graph/vgg_atrous2_graph.png)
+![vgg atrous 2 graph](graph/https://github.com/polltooh/video_analysis/blob/master/graph/vgg_atrous_graph2.png)
 
