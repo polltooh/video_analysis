@@ -39,6 +39,6 @@ This directory contains the scipt which used in generating the file\_list.
 ### data\_process\_script
 This directory contains the script which used in processing.
 
-
-
+### net work structure:
+![vgg atrous 2 graph](graph/vgg_atrous2_graph.png)
 

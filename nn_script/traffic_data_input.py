@@ -8,16 +8,21 @@ import numpy as np
 
 class DataInput(DataInputAbs):
     def __init__(self, model_params, is_train):
-        arg_dict = self.get_arg_dict(model_params)
+        with tf.variable_scope("data_argmentation"):
+            arg_dict = self.get_arg_dict(model_params)
+
         self.is_train = is_train
 
         if is_train:
             file_name = model_params["train_file_name"]
+            phase = "train"
         else:
             file_name = model_params["test_file_name"]
+            phase = "test"
 
-        self.file_queue = data_reader.file_queue(file_name, is_train)
-        self.load_data(model_params, arg_dict)
+        with tf.variable_scope("%s_data_loading"%phase):
+            self.file_queue = data_reader.file_queue(file_name, is_train)
+            self.load_data(model_params, arg_dict)
 
     def get_arg_dict(self, model_params):
         arg_dict = dict()

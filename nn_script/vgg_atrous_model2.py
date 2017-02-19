@@ -25,7 +25,7 @@ class Model(ModelAbs):
             "SAME", wd, "conv1_1"), leaky_param)
 
         conv12 = mf.add_leaky_relu(mf.convolution_2d_layer(
-            input_ph, [3, 3, 3, 64], [1, 1],
+            conv11, [3, 3, 64, 64], [1, 1],
             "SAME", wd, "conv1_2"), leaky_param)
 
         conv12_maxpool = mf.maxpool_2d_layer(conv12, [3, 3],
@@ -97,7 +97,7 @@ class Model(ModelAbs):
 
         hyper_list.append(atrous52)
 
-        hypercolumn = self.pack_tensor_list(hyper_list)
+        hypercolumn = self._pack_tensor_list(hyper_list)
         print(hypercolumn)
 
         [b, w, h, c]= hypercolumn.get_shape().as_list()
@@ -126,12 +126,12 @@ class Model(ModelAbs):
         self.predict_list = list()
         self.predict_list.append(conv7)
 
-    def pack_tensor_list(self, tensor_list):
+    def _pack_tensor_list(self, tensor_list):
         hypercolumn = tf.concat(3, tensor_list)
 
         return hypercolumn
 
-    def resize_deconv(self, input_tensor, desire_shape,
+    def _resize_deconv(self, input_tensor, desire_shape,
                       output_channel, wd, layer_name):
         b, w, h, c = input_tensor.get_shape().as_list()
         with tf.variable_scope(layer_name):
@@ -150,30 +150,32 @@ class Model(ModelAbs):
 
         return deconv
 
-    def filter_mask(self, tensor, mask):
+    def _filter_mask(self, tensor, mask):
         tensor = tensor * mask
         return tensor
 
     def model_loss(self, data_ph, model_params):
-        label = data_ph.get_label()
-        mask = data_ph.get_mask()
+        with tf.variable_scope("loss"):
+            label = data_ph.get_label()
+            mask = data_ph.get_mask()
 
-        l2_loss_list = list()
-        for i, deconv in enumerate(self.predict_list):
-            deconv = self.filter_mask(deconv, mask)
-            label = self.filter_mask(label, mask)
-            l2_loss = mf.image_l2_loss(deconv, label, "l2_loss_%d" % i)
-            l2_loss_list.append(l2_loss)
-            tf.add_to_collection("losses", l2_loss)
+            l2_loss_list = list()
+            for i, deconv in enumerate(self.predict_list):
+                deconv = self._filter_mask(deconv, mask)
+                label = self._filter_mask(label, mask)
+                l2_loss = mf.image_l2_loss(deconv, label, "l2_loss_%d" % i)
+                l2_loss_list.append(l2_loss)
+                tf.add_to_collection("losses", l2_loss)
 
-        self.l2_loss = tf.add_n(l2_loss_list)
-        self.loss = tf.add_n(tf.get_collection('losses'), name='total_loss')
+            self.l2_loss = tf.add_n(l2_loss_list)
+            self.loss = tf.add_n(tf.get_collection('losses'), name='total_loss')
 
     def model_mini(self, model_params):
-        optimizer = tf.train.AdamOptimizer(
-            model_params["init_learning_rate"],
-            epsilon=1.0)
-        self.train_op = optimizer.minimize(self.loss)
+        with tf.variable_scope("optimization"):
+            optimizer = tf.train.AdamOptimizer(
+                model_params["init_learning_rate"],
+                epsilon=1.0)
+            self.train_op = optimizer.minimize(self.loss)
 
     def get_train_op(self):
         return self.train_op
