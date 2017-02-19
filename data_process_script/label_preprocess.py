@@ -8,7 +8,7 @@ import xmltodict
 from PIL import Image, ImageDraw
 import sys
 
-dsize = (256, 256)
+#dsize = (256, 256)
 
 debug = False
 
@@ -117,7 +117,7 @@ def crop_image(image_name, mask_bbox, save_data=False):
     # cv2.imshow("test", density_map * 255)
     # cv2.waitKey(0)
     if save_data:
-        save_image_name = image_name.replace(".jpg", "") + "_resize.jpg"
+        save_image_name = image_name.replace(".jpg", "") + "_%d.jpg"%(dsize[0])
         cv2.imwrite(save_image_name, resize_image)
         density_map.tofile(save_image_name.replace(".jpg", ".desmap"))
         # cv2.imshow("resized", resize_image)
@@ -134,10 +134,14 @@ def gen_mask_image(mask_pts):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        data_dir = sys.argv[1]
-    else:
-        data_dir = "../data"
+    if not len(sys.argv) == 3:
+        print("Usage: msk_resize.py data_dir size_len")
+        exit(1)
+
+    data_dir = sys.argv[1]
+    size_len = int(sys.argv[2])
+    global dsize
+    dsize = (size_len, size_len)
 
     mask_dir_list = file_io.get_dir_list(data_dir)
 
@@ -164,7 +168,9 @@ if __name__ == "__main__":
             #        continue
 
             for img in image_list:
-                if img.endswith("_resize.jpg"):
+                #if img.endswith("_resize.jpg"):
+                #    continue
+                if len(img.split("_")) > 1:
                     continue
                 try:
                     # crop_image(img, mask_bin, mask_pts, True)

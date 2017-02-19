@@ -86,11 +86,11 @@ class Model(ModelAbs):
 
         atrous51 = mf.add_leaky_relu(mf.atrous_convolution_layer(
             atrous4, [3, 3, 512, 512], 2,
-            "SAME", wd, "atrous51"), leaky_param)
+            "SAME", wd, "atrous5_1"), leaky_param)
 
         atrous52 = mf.add_leaky_relu(mf.atrous_convolution_layer(
             atrous51, [3, 3, 512, 512], 2,
-            "SAME", wd, "atrous52"), leaky_param)
+            "SAME", wd, "atrous5_2"), leaky_param)
 
         print(atrous52)
         #hyper_list.append(atrous52)

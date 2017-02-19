@@ -4,13 +4,20 @@ import numpy as np
 import cv2
 import sys
 
-dsize = (256, 256)
+#dsize = (256, 256)
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        data_dir = sys.argv[1]
-    else:
-        data_dir = "../data"
+    if not len(sys.argv) == 3:
+        print("Usage: msk_resize.py data_dir size_len")
+        exit(1)
+    data_dir = sys.argv[1]
+    size_len = int(sys.argv[2])
+    dsize = (size_len, size_len)
+
+    #if len(sys.argv) > 1:
+    #    data_dir = sys.argv[1]
+    #else:
+    #    data_dir = "../data"
 
     mask_dir_list = file_io.get_dir_list(data_dir)
     for mask_dir in mask_dir_list:
@@ -25,6 +32,6 @@ if __name__ == "__main__":
             mask_img = mask_img / 255
             mask_img = mask_img.astype(np.float32)
             mask_img[mask_img > 0] = 1.0
-            np_name = mask_img_name.replace(".png", "_msk_resize.npy")
+            np_name = mask_img_name.replace(".png", "_msk_%d.npy"%size_len)
 
             mask_img.tofile(np_name)
