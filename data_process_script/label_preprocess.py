@@ -66,7 +66,7 @@ def get_density_map(annot_name, mask_coord):
         ymax = int((ymax - coord[3]) * dsize[0] / float(coord[2] - coord[3]))
         ymin = int((ymin - coord[3]) * dsize[0] / float(coord[2] - coord[3]))
 
-        density = 1 / float((ymax - ymin + 1) * (xmax - xmin + 1))
+        density = 1 / float(max((ymax - ymin + 1),1) * max((xmax - xmin + 1),1))
         image[ymin:ymax, xmin:xmax] += density
         return image
 
