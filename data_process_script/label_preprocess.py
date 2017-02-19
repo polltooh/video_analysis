@@ -170,7 +170,7 @@ if __name__ == "__main__":
             for img in image_list:
                 #if img.endswith("_resize.jpg"):
                 #    continue
-                if len(img.split("_")) > 1:
+                if len(img.split("/")[-1].split("_")) > 1:
                     continue
                 try:
                     # crop_image(img, mask_bin, mask_pts, True)
