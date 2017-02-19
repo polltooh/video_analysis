@@ -1,5 +1,7 @@
 from TensorflowToolbox.model_flow.model_abs import ModelAbs
 from TensorflowToolbox.model_flow import model_func as mf
+from TensorflowToolbox.utility import image_utility_func as iuf
+
 import tensorflow as tf
 
 
@@ -127,13 +129,21 @@ class Model(ModelAbs):
             "SAME", wd, "conv7"), leaky_param)
         print(conv7)
 
-        tf.add_to_collection("image_to_write", data_ph.get_input())
-        tf.add_to_collection("image_to_write", data_ph.get_label())
-        tf.add_to_collection("image_to_write", data_ph.get_mask()) 
-        tf.add_to_collection("image_to_write", conv7) 
+        #tf.add_to_collection("image_to_write", data_ph.get_input())
+        #tf.add_to_collection("image_to_write", data_ph.get_label())
+        #tf.add_to_collection("image_to_write", data_ph.get_mask()) 
+        #tf.add_to_collection("image_to_write", conv7) 
+
+        self._add_image_sum(data_ph.get_input(), data_ph.get_label(), 
+                conv7, data_ph.get_mask())
 
         self.predict_list = list()
         self.predict_list.append(conv7)
+
+    def _add_image_sum(self, input_img, label, conv, mask):
+        concat = iuf.merge_image(2, [input_img, label, conv, mask])
+        tf.add_to_collection("image_to_write", concat)
+
 
     def _deconv2_wrapper(self, input_tensor, sample_tensor, 
                 output_channel, wd, layer_name):

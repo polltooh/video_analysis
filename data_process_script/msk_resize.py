@@ -20,7 +20,6 @@ if __name__ == "__main__":
     #    data_dir = "../data"
 
     mask_dir_list = file_io.get_dir_list(data_dir)
-    print(mask_dir_list)
     for mask_dir in mask_dir_list:
         mask_list = file_io.get_listfile(mask_dir, ".msk")
         for mask in mask_list:
