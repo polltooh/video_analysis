@@ -5,7 +5,7 @@ import sys
 
 if __name__ == "__main__":
     if not len(sys.argv) == 3:
-        print("Usage: msk_resize.py data_dir size_len")
+        print("Usage: gen_train_list.py data_dir size_len")
         exit(1)
     data_dir = sys.argv[1]
     size_len = int(sys.argv[2])

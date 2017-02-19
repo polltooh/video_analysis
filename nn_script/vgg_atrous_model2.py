@@ -105,14 +105,23 @@ class Model(ModelAbs):
             hypercolumn, [1, 1, c, 512], [1, 1],
             "SAME", wd, "conv6"), leaky_param)
 
-        deconv1 = mf.deconvolution_2d_layer(conv6, [3, 3, 256, 512], 
-                    [2, 2], [b, 111, 111, 256], 'VALID', wd, 'deconv1')
+        deconv1 = self._deconv2_wrapper(conv6, conv21, 
+                    256, wd, "deconv1")
         print(deconv1)
 
-        deconv2 = mf.deconvolution_2d_layer(deconv1, [3, 3, 64, 256], 
-                    [2, 2], [b, 224, 224, 64], 'VALID', wd, 'deconv2')
-
+        deconv2 = self._deconv2_wrapper(deconv1, conv11, 
+                    64, wd, "deconv2")
         print(deconv2)
+
+        #deconv1 = mf.deconvolution_2d_layer(conv6, [3, 3, 256, 512], 
+        #            [2, 2], [b, 111, 111, 256], 'VALID', wd, 'deconv1')
+        #print(deconv1)
+
+        #deconv2 = mf.deconvolution_2d_layer(deconv1, [3, 3, 64, 256], 
+        #            [2, 2], [b, 224, 224, 64], 'VALID', wd, 'deconv2')
+
+        #print(deconv2)
+
         conv7 = mf.add_leaky_relu(mf.convolution_2d_layer(
             deconv2, [1, 1, 64, 1], [1, 1],
             "SAME", wd, "conv7"), leaky_param)
@@ -125,6 +134,18 @@ class Model(ModelAbs):
 
         self.predict_list = list()
         self.predict_list.append(conv7)
+
+    def _deconv2_wrapper(self, input_tensor, sample_tensor, 
+                output_channel, wd, layer_name):
+        [b, h, w, _] = sample_tensor.get_shape().as_list()
+        [_,_,_,c] = input_tensor.get_shape().as_list()
+
+        deconv = mf.deconvolution_2d_layer(input_tensor, 
+                    [3, 3, output_channel, c], 
+                    [2, 2], [b, h, w, output_channel], 'VALID', 
+                    wd, layer_name)
+        return deconv
+
 
     def _pack_tensor_list(self, tensor_list):
         hypercolumn = tf.concat(3, tensor_list)
