@@ -25,6 +25,8 @@ mask_ph_row: 224
 mask_ph_col: 224
 mask_cha: 1
 
+desmap_scale: 100
+
 leaky_param:0.01
 weight_decay:0.0004
 

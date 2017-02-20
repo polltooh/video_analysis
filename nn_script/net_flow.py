@@ -63,7 +63,7 @@ class NetFlow(object):
         
 
         feed_dict[self.data_ph.get_input()] = input_v
-        feed_dict[self.data_ph.get_label()] = label_v * desmap_scale
+        feed_dict[self.data_ph.get_label()] = label_v * self.desmap_scale
         feed_dict[self.data_ph.get_mask()] = mask_v
 
         return feed_dict
