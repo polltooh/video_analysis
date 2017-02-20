@@ -133,9 +133,9 @@ class Model(ModelAbs):
         #tf.add_to_collection("image_to_write", data_ph.get_label())
         #tf.add_to_collection("image_to_write", data_ph.get_mask()) 
         #tf.add_to_collection("image_to_write", conv7) 
-
-        self._add_image_sum(data_ph.get_input(), data_ph.get_label(), 
-                conv7, data_ph.get_mask())
+        with tf.variable_scope("image_sum"):
+            self._add_image_sum(data_ph.get_input(), data_ph.get_label(), 
+                    conv7, data_ph.get_mask())
 
         self.predict_list = list()
         self.predict_list.append(conv7)
@@ -198,6 +198,8 @@ class Model(ModelAbs):
                 l2_loss_list.append(l2_loss)
                 tf.add_to_collection("losses", l2_loss)
 
+                l1_loss = mf.image_l1_loss(deconv, label, "l1_loss_%d" % i)
+            self.l1_loss = l1_loss
             self.l2_loss = tf.add_n(l2_loss_list)
             self.loss = tf.add_n(tf.get_collection('losses'), name='total_loss')
 
@@ -216,7 +218,10 @@ class Model(ModelAbs):
 
     def get_l2_loss(self):
         return self.l2_loss
-
+    
+    def get_l1_loss(self):
+        return self.l1_loss
+        
 
 if __name__ == "__main__":
     pass

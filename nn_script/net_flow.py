@@ -21,6 +21,8 @@ class NetFlow(object):
         self.model_params = model_params
         self.check_model_params(model_params)
 
+        self.desmap_scale = self.model_params["desmap_scale"]
+
         if load_train:
             self.train_data_input = DataInput(model_params, is_train=True)
         if load_test:
@@ -33,6 +35,7 @@ class NetFlow(object):
         self.model = model(self.data_ph, model_params)
         self.loss = self.model.get_loss()
         self.l2_loss = self.model.get_l2_loss()
+        self.l1_loss = self.model.get_l1_loss()
         self.train_op = self.model.get_train_op()
 
     @staticmethod
@@ -57,9 +60,10 @@ class NetFlow(object):
                 self.test_data_input.get_label(),
                 self.test_data_input.get_mask(),
                 self.test_data_input.get_file_line()])
+        
 
         feed_dict[self.data_ph.get_input()] = input_v
-        feed_dict[self.data_ph.get_label()] = label_v * 100
+        feed_dict[self.data_ph.get_label()] = label_v * desmap_scale
         feed_dict[self.data_ph.get_mask()] = mask_v
 
         return feed_dict
@@ -117,9 +121,11 @@ class NetFlow(object):
 
                 if i % self.model_params["test_per_iter"] == 0:
                     feed_dict = self.get_feed_dict(sess, is_train=False)
-                    l2_loss_v, summ_v = sess.run([self.l2_loss, self.summ], feed_dict)
-                    print("i: %d, train_loss: %.4f, test loss: %.4f" %
-                          (i, loss_v, l2_loss_v))
+                    l2_loss_v, l1_loss_v, summ_v = sess.run([self.l2_loss,
+                                self.l1_loss, self.summ], feed_dict)
+                    print("i: %d, train_loss: %.4f, test loss: %.4f, "
+                                "test image diff: %.4f" %
+                          (i, loss_v, l2_loss_v, l1_loss_v/self.desmap_scale))
                     self.sum_writer.add_summary(summ_v, i)
                     sf.add_value_sum(self.sum_writer, loss_v, "train_loss", i)
                     sf.add_value_sum(self.sum_writer, l2_loss_v, "test_loss", i)
