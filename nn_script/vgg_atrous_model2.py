@@ -115,6 +115,16 @@ class Model(ModelAbs):
                     64, wd, "deconv2")
         print(deconv2)
 
+        # Add domain classifier
+        if model_params['use_da']:
+            da_conv1 = mf.add_leaky_relu(mf.convolution_2d_layer(
+                    deconv2, [1, 1, 64, 64], [1, 1],
+                    "SAME", wd, "da_conv1"), leaky_param)
+            da_cls = mf.add_leaky_relu(mf.convolution_2d_layer(
+                    da_conv1, [1, 1, 64, 2], [1, 1],
+                    "SAME", wd, "da_cls"), leaky_param)
+            self.da_cls = da_cls
+
         #deconv1 = mf.deconvolution_2d_layer(conv6, [3, 3, 256, 512], 
         #            [2, 2], [b, 111, 111, 256], 'VALID', wd, 'deconv1')
         #print(deconv1)
@@ -201,6 +211,18 @@ class Model(ModelAbs):
                 l1_loss = mf.image_l1_loss(deconv, label, "l1_loss_%d" % i)
             self.l1_loss = l1_loss
             self.l2_loss = tf.add_n(l2_loss_list)
+
+            # Add domain loss
+            if model_params['use_da']:
+                pred = tf.reshape(self.da_cls, [-1, 2])
+                da_label = data_ph.get_da_label()
+                total_da_loss = tf.nn.softmax_cross_entropy_with_logits(
+                    pred, da_label
+                )
+                weight_da_loss = data_ph.get_da_weight() * total_da_loss
+                self.da_loss = tf.reduce_mean(weight_da_loss)
+                tf.add_to_collection("losses", self.da_loss)
+
             self.loss = tf.add_n(tf.get_collection('losses'), name='total_loss')
 
     def model_mini(self, model_params):

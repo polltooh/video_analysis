@@ -47,6 +47,9 @@ class DataInput(DataInputAbs):
     # arg_dict = [data_arg_dict, label_arg_dict]
 
     # return arg_dict_list
+    def get_da_label(self):
+        # TODO
+        return None
 
     def get_label(self):
         return self.label
@@ -78,6 +81,8 @@ class DataInput(DataInputAbs):
             [model_params["mask_row"],
              model_params["mask_col"],
              model_params["mask_cha"]])
+
+        # Add da class
 
         tensor_list = [input_class] + [label_class] + [mask_class]
         batch_tensor_list = data_reader.file_queue_to_batch_data(
