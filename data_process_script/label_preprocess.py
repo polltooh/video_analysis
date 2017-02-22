@@ -11,6 +11,37 @@ import sys
 #dsize = (256, 256)
 
 debug = False
+minimum_len = 3
+
+def gauss2d(shape=(3,3),sigma=0.5):
+    """
+        i.e.
+        shape = (2,2)
+        sigma = 0.5
+    """
+
+    m,n = [(ss-1.)/2. for ss in shape]
+    y,x = np.ogrid[-m:m+1,-n:n+1]
+    h = np.exp( -(x*x + y*y) / (2.*sigma*sigma) )
+    h[ h < np.finfo(h.dtype).eps*h.max() ] = 0
+    sumh = h.sum()
+    if sumh != 0:
+        h /= sumh
+    return h
+
+def add_gauss(image, gauss_f):
+    h, w = image.shape
+    if h > w:
+        gauss_f = gauss_f[:w,:w]
+        start_i = int((h - w)/2)
+        end_i = start_i + w
+        image[start_i:end_i,:] += gauss_f
+    else:
+        gauss_f = gauss_f[:h,:h]
+        start_i = int((w - h)/2)
+        end_i = start_i + h
+        image[:,start_i:end_i] += gauss_f
+    return image
 
 
 def get_point(one_line):
@@ -66,8 +97,18 @@ def get_density_map(annot_name, mask_coord):
         ymax = int((ymax - coord[3]) * dsize[0] / float(coord[2] - coord[3]))
         ymin = int((ymin - coord[3]) * dsize[0] / float(coord[2] - coord[3]))
 
-        density = 1 / float(max((ymax - ymin + 1),1) * max((xmax - xmin + 1),1))
-        image[ymin:ymax, xmin:xmax] += density
+        #density = 1 / float(max((ymax - ymin + 1),1) * max((xmax - xmin + 1),1))
+
+        short_side = min(ymax - ymin + 1, xmax - xmin + 1)
+        if short_side < minimum_len:
+            return image
+
+        sigma = max((short_side/ 2.0)/ 3, 1.0)
+
+        gauss_f = gauss2d((short_side, short_side), sigma)
+        add_gauss(image[ymin:ymax+1, xmin:xmax+1], gauss_f)
+
+        #image[ymin:ymax, xmin:xmax] += density
         return image
 
     if 'vehicle' not in doc['annotation']:
