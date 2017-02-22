@@ -59,6 +59,7 @@ train_log_dir:logs/
 model_dir:models/
 restore_model:False
 restore_mode_name:None
+use_da: False
 
 # define the fraction of gpu
 gpu_fraction: 0.2
