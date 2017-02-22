@@ -17,6 +17,7 @@ if __name__ == "__main__":
     mask_ext = "_msk_%d.npy"%size_len
 
     cam_dir_list = file_io.get_dir_list(data_dir)
+    #cam_dir_list = ["/media/dog/data/WebCamT_60000/253"]
     train_list = list()
     test_list = list()
     full_file_list = list()
