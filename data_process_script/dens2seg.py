@@ -5,15 +5,18 @@ import os
 import sys
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        data_dir = sys.argv[1]
-    else:
-        data_dir = "../data"
+    if not len(sys.argv) == 3:
+        print("Usage: label_preprocess.py data_dir size_len")
+        exit(1)
 
-    dsize = (256, 256)
-    data_ext = "_resize.jpg"
-    label_ext = "_resize.desmap"
-    seg_ext = "_resize.segmap"
+    data_dir = sys.argv[1]
+    size_len = int(sys.argv[2])
+    dsize = (size_len, size_len)
+
+    data_ext = "_%d.jpg"%size_len
+    label_ext = "_%d.desmap"%size_len
+    seg_ext = "_%d.segmap"%size_len
+
     cam_dir_list = file_io.get_dir_list(data_dir)
 
     train_list = list()
