@@ -11,7 +11,7 @@ import sys
 #dsize = (256, 256)
 
 debug = False
-minimum_len = 3
+#minimum_len = 3
 
 def gauss2d(shape=(3,3),sigma=0.5):
     """
@@ -127,8 +127,8 @@ def get_density_map(annot_name, mask_coord):
 def crop_image(image_name, mask_bbox, save_data=False):
     image = cv2.imread(image_name)
     if image.shape[0] != 240:
-        image = cv2.resize(image, (352, 240))
         print(image_name + " shape is " + str(image.shape))
+        image = cv2.resize(image, (352, 240))
 
     # for i in xrange(3):
     #    image[:,:,i] = image[:,:,i] * mask_bin
