@@ -99,11 +99,11 @@ def get_density_map(annot_name, mask_coord):
 
         #density = 1 / float(max((ymax - ymin + 1),1) * max((xmax - xmin + 1),1))
 
-        short_side = min(ymax - ymin + 1, xmax - xmin + 1)
-        if short_side < minimum_len:
-            return image
+        short_side = max(1, min(ymax - ymin + 1, xmax - xmin + 1))
+        #if short_side < minimum_len:
+        #    return image
 
-        sigma = max((short_side/ 2.0)/ 3, 1.0)
+        sigma = max((short_side/ 2.0)/ 1, 1.0)
 
         gauss_f = gauss2d((short_side, short_side), sigma)
         add_gauss(image[ymin:ymax+1, xmin:xmax+1], gauss_f)
