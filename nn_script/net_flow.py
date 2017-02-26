@@ -157,6 +157,7 @@ class NetFlow(object):
                     self.sum_writer.add_summary(summ_v, i)
                     sf.add_value_sum(self.sum_writer, loss_v, "train_loss", i)
                     sf.add_value_sum(self.sum_writer, l2_loss_v, "test_loss", i)
+                    sf.add_value_sum(self.sum_writer, l1_loss_v, "l1_loss", i)
                     sf.add_value_sum(self.sum_writer, img_diff_v, "img_diff", i)
                     #sf.add_value_sum(self.sum_writer, stage2_v, "stage2", i)
                     #sf.add_value_sum(self.sum_writer, stage3_v, "stage3", i)
