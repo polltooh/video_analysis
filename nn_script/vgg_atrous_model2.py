@@ -209,7 +209,10 @@ class Model(ModelAbs):
                 tf.add_to_collection("losses", l2_loss)
 
                 l1_loss = mf.image_l1_loss(deconv, label, "l1_loss_%d" % i)
+                img_diff = mf.image_diff(deconv, label, "image_diff")
+
             self.l1_loss = l1_loss
+            self.img_diff = img_diff
             self.l2_loss = tf.add_n(l2_loss_list)
 
             # Add domain loss
@@ -243,6 +246,9 @@ class Model(ModelAbs):
     
     def get_l1_loss(self):
         return self.l1_loss
+
+    def get_img_diff(self):
+        return self.img_diff
         
 
 if __name__ == "__main__":
