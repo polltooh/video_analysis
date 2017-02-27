@@ -36,7 +36,7 @@ class NetFlow(object):
         self.loss = self.model.get_loss()
         self.l2_loss = self.model.get_l2_loss()
         self.l1_loss = self.model.get_l1_loss()
-        self.img_diff = self.model.get_img_diff()
+        self.count_diff = self.model.get_count_diff()
         self.train_op = self.model.get_train_op()
 
     @staticmethod
@@ -143,22 +143,22 @@ class NetFlow(object):
 
                 if i % self.model_params["test_per_iter"] == 0:
                     feed_dict = self.get_feed_dict(sess, is_train=False)
-                    l2_loss_v, summ_v, l1_loss_v, img_diff_v = \
+                    l2_loss_v, summ_v, l1_loss_v, count_diff_v = \
                                 sess.run([self.l2_loss, \
-                                self.summ, self.l1_loss, self.img_diff], feed_dict)
+                                self.summ, self.l1_loss, self.count_diff], feed_dict)
 
                     l1_loss_v /= self.desmap_scale
-                    img_diff_v /= self.desmap_scale
+                    count_diff_v /= self.desmap_scale
 
                     print("i: %d, train_loss: %.4f, test_loss: %.4f, "
                                 "image_diff: %.4f, l1_loss: %4f" %
-                          (i, loss_v, l2_loss_v, img_diff_v, l1_loss_v))
+                          (i, loss_v, l2_loss_v, count_diff_v, l1_loss_v))
 
                     self.sum_writer.add_summary(summ_v, i)
                     sf.add_value_sum(self.sum_writer, loss_v, "train_loss", i)
                     sf.add_value_sum(self.sum_writer, l2_loss_v, "test_loss", i)
                     sf.add_value_sum(self.sum_writer, l1_loss_v, "l1_loss", i)
-                    sf.add_value_sum(self.sum_writer, img_diff_v, "img_diff", i)
+                    sf.add_value_sum(self.sum_writer, count_diff_v, "count_diff", i)
                     #sf.add_value_sum(self.sum_writer, stage2_v, "stage2", i)
                     #sf.add_value_sum(self.sum_writer, stage3_v, "stage3", i)
 
