@@ -211,7 +211,7 @@ class Model(ModelAbs):
                 l1_loss = mf.image_l1_loss(deconv, label, "l1_loss_%d" % i)
                 tf.add_to_collection("losses", l1_loss)
 
-                count_diff = mf.image_diff(deconv, label, "image_diff")
+                count_diff = mf.count_diff(deconv, label, "count_diff")
 
             self.l1_loss = l1_loss
             self.count_diff = count_diff
