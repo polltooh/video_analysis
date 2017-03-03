@@ -1,6 +1,6 @@
 from TensorflowToolbox.utility import file_io
 
-trancos_data_path = "../"
+trancos_data_path = "/media/dog/data/TranCos/TranCos/TranCos/"
 
 def file_list_to_train_list(file_list_name):
     train_file = file_io.read_file(file_list_name)

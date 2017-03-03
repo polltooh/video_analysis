@@ -3,7 +3,7 @@ import numpy as np
 import scipy.io as sio
 import cv2
 
-trancos_data_path = "/Users/Geoff/Documents/my_git/data/Trancos/"
+trancos_data_path = "/media/dog/data/TranCos/TranCos/TranCos/"
 
 def mat_to_np(file_name):
     mat = sio.loadmat(file_name)
@@ -33,8 +33,8 @@ def single_file_list(file_list_name):
 
 
 if __name__ == "__main__":
-    train_file_list_name = "trainval.txt"
+    train_file_list_name = "../file_list/trancos_org_trainval.txt"
     single_file_list(train_file_list_name)
-    test_file_list_name= "test.txt"
+    test_file_list_name= "../file_list/trancos_org_test.txt"
     single_file_list(test_file_list_name)
 
