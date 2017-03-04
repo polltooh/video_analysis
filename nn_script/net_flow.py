@@ -189,9 +189,9 @@ class NetFlow(object):
                 label_count_v = result_obj.float_to_str(label_count_v, "%.2f")
                 
                 result_obj.add_to_list(file_line, label_count_v, count_v)
-                result_obj.save_to_file(True)
                 print(self.file_line, count_v, label_count_v, loss_v)
-                exit(1)
+
+            result_obj.save_to_file(True)
 
         coord.request_stop()
         coord.join(threads)
