@@ -37,6 +37,7 @@ class NetFlow(object):
         self.l2_loss = self.model.get_l2_loss()
         self.l1_loss = self.model.get_l1_loss()
         self.count_diff = self.model.get_count_diff()
+        self.count = self.model.get_count()
         self.train_op = self.model.get_train_op()
 
     @staticmethod
@@ -66,6 +67,8 @@ class NetFlow(object):
         feed_dict[self.data_ph.get_label()] = label_v * self.desmap_scale
         feed_dict[self.data_ph.get_mask()] = mask_v
 
+        self.file_line = file_line_v
+
         return feed_dict
 
     def get_feed_dict_da(self, sess, is_train):
@@ -86,6 +89,7 @@ class NetFlow(object):
         feed_dict[self.data_ph.get_input()] = input_v
         feed_dict[self.data_ph.get_label()] = label_v * self.desmap_scale
         feed_dict[self.data_ph.get_mask()] = mask_v
+
 
         return feed_dict
 
@@ -167,10 +171,14 @@ class NetFlow(object):
                     sf.save_model(sess, self.saver, self.model_params["model_dir"],i)
                     
         else:
-            for i in range(self.model_params["test_iter"]):
+            file_len = file_io.get_file_length(self.model_params["test_file_name"])
+            batch_size = self.model_params["batch_size"]
+            test_iter = int(file_len / batch_size) + 1
+            for i in range(test_iter):
                 feed_dict = self.get_feed_dict(sess, is_train=False)
-                loss_v = sess.run(self.loss, feed_dict)
-                print(loss_v)
+                loss_v, count_v = sess.run([self.loss, self.count], feed_dict)
+                count_v /= self.desmap_scale
+                print(self.file_line, count_v, loss_v)
 
         coord.request_stop()
         coord.join(threads)
