@@ -155,8 +155,8 @@ class NetFlow(object):
                     l1_loss_v /= self.desmap_scale
                     count_diff_v /= self.desmap_scale
 
-                    print("i: %d, train_loss: %.4f, test_loss: %.4f, "
-                                "count_diff: %.4f, l1_loss: %4f" %
+                    print("i: %d, train_loss: %.2f, test_loss: %.2f, "
+                                "count_diff: %.2f, l1_loss: %2f" %
                           (i, loss_v, l2_loss_v, count_diff_v, l1_loss_v))
 
                     self.sum_writer.add_summary(summ_v, i)
