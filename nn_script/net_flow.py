@@ -1,11 +1,10 @@
 from traffic_data_ph import DataPh
 from traffic_data_input import DataInput
-# from vgg_model import Model
-# from vgg_atrous_model2 import Model
 from TensorflowToolbox.utility import file_io
 import tensorflow as tf
 from TensorflowToolbox.model_flow import save_func as sf
 from TensorflowToolbox.utility import utility_func as uf 
+from TensorflowToolbox.utility import result_obj as ro
 import cv2
 import numpy as np
 import os
@@ -175,13 +174,24 @@ class NetFlow(object):
             file_len = file_io.get_file_length(self.model_params["test_file_name"])
             batch_size = self.model_params["batch_size"]
             test_iter = int(file_len / batch_size) + 1
+            result_file_name = self.model_params["result_file_name"]
+            result_obj = ro.ResultObj(result_file_name)
+
             for i in range(test_iter):
                 feed_dict = self.get_feed_dict(sess, is_train=False)
                 loss_v, count_v, label_count_v = sess.run([self.loss, self.count, 
                             self.label_count], feed_dict)
                 count_v /= self.desmap_scale
                 label_count_v /= self.desmap_scale
+
+                file_line = [f.decode("utf-8").split(" ")[0] for f in self.file_line]
+                count_v = result_obj.float_to_str(count_v, "%.2f")
+                label_count_v = result_obj.float_to_str(label_count_v, "%.2f")
+                
+                result_obj.add_to_list(file_line, label_count_v, count_v)
+                result_obj.save_to_file(True)
                 print(self.file_line, count_v, label_count_v, loss_v)
+                exit(1)
 
         coord.request_stop()
         coord.join(threads)
