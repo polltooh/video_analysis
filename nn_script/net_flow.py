@@ -38,6 +38,7 @@ class NetFlow(object):
         self.l1_loss = self.model.get_l1_loss()
         self.count_diff = self.model.get_count_diff()
         self.count = self.model.get_count()
+        self.label_count = self.model.get_label_count()
         self.train_op = self.model.get_train_op()
 
     @staticmethod
@@ -176,9 +177,11 @@ class NetFlow(object):
             test_iter = int(file_len / batch_size) + 1
             for i in range(test_iter):
                 feed_dict = self.get_feed_dict(sess, is_train=False)
-                loss_v, count_v = sess.run([self.loss, self.count], feed_dict)
+                loss_v, count_v, label_count_v = sess.run([self.loss, self.count, 
+                            self.label_count], feed_dict)
                 count_v /= self.desmap_scale
-                print(self.file_line, count_v, loss_v)
+                label_count_v /= self.desmap_scale
+                print(self.file_line, count_v, label_count_v, loss_v)
 
         coord.request_stop()
         coord.join(threads)

@@ -214,10 +214,12 @@ class Model(ModelAbs):
                 count_diff = mf.count_diff(deconv, label, "count_diff")
 
                 count = tf.reduce_sum(deconv, [1,2,3])
+                label_count = tf.reduce_sum(label, [1,2,3])
 
             self.l1_loss = l1_loss
             self.count_diff = count_diff
             self.count = count
+            self.label_count = label_count
             self.l2_loss = tf.add_n(l2_loss_list)
 
             # Add domain loss
@@ -257,6 +259,10 @@ class Model(ModelAbs):
 
     def get_count(self):
         return self.count
+
+    def get_label_count(self):
+        return self.label_count
+
 
 if __name__ == "__main__":
     pass
