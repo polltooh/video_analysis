@@ -189,7 +189,7 @@ class NetFlow(object):
                 label_count_v = result_obj.float_to_str(label_count_v, "%.2f")
                 
                 result_obj.add_to_list(file_line, label_count_v, count_v)
-                print(self.file_line, count_v, label_count_v, loss_v)
+                print(file_line[0], count_v[0], label_count_v[0])
 
             result_obj.save_to_file(True)
 
