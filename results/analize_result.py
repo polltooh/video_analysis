@@ -7,8 +7,11 @@ def mae(label_list, infer_list):
     return mae_v
 
 if __name__ == "__main__":
-    #file_name = sys.argv[1] 
-    file_name = "trancos_result1.txt"
+    if len(sys.argv) < 2:
+        print("Usage: python analize_result.py file_name")
+        exit(1)
+
+    file_name = sys.argv[1]
     file_list = file_io.read_file(file_name)
     label_list = list()
     infer_list = list()
