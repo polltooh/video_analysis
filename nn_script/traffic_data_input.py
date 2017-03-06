@@ -122,7 +122,6 @@ if __name__ == "__main__":
     # model_params["label_arg.rflip_updown"] = True
     # model_params["label_arg.rcrop_size"] = [200, 200, 1]
 
-
     model_params["train_file_name"] = "../file_list/test_file2.txt"
 
     # arg_dict_list = [data_arg_dict, label_arg_dict]
