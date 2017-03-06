@@ -1,11 +1,10 @@
 from traffic_data_ph import DataPh
 from traffic_data_input import DataInput
-# from vgg_model import Model
-# from vgg_atrous_model2 import Model
 from TensorflowToolbox.utility import file_io
 import tensorflow as tf
 from TensorflowToolbox.model_flow import save_func as sf
 from TensorflowToolbox.utility import utility_func as uf 
+from TensorflowToolbox.utility import result_obj as ro
 import cv2
 import numpy as np
 import os
@@ -37,6 +36,8 @@ class NetFlow(object):
         self.l2_loss = self.model.get_l2_loss()
         self.l1_loss = self.model.get_l1_loss()
         self.count_diff = self.model.get_count_diff()
+        self.count = self.model.get_count()
+        self.label_count = self.model.get_label_count()
         self.train_op = self.model.get_train_op()
 
     @staticmethod
@@ -66,6 +67,8 @@ class NetFlow(object):
         feed_dict[self.data_ph.get_label()] = label_v * self.desmap_scale
         feed_dict[self.data_ph.get_mask()] = mask_v
 
+        self.file_line = file_line_v
+
         return feed_dict
 
     def get_feed_dict_da(self, sess, is_train):
@@ -86,6 +89,7 @@ class NetFlow(object):
         feed_dict[self.data_ph.get_input()] = input_v
         feed_dict[self.data_ph.get_label()] = label_v * self.desmap_scale
         feed_dict[self.data_ph.get_mask()] = mask_v
+
 
         return feed_dict
 
@@ -150,8 +154,8 @@ class NetFlow(object):
                     l1_loss_v /= self.desmap_scale
                     count_diff_v /= self.desmap_scale
 
-                    print("i: %d, train_loss: %.4f, test_loss: %.4f, "
-                                "count_diff: %.4f, l1_loss: %4f" %
+                    print("i: %d, train_loss: %.2f, test_loss: %.2f, "
+                                "count_diff: %.2f, l1_loss: %2f" %
                           (i, loss_v, l2_loss_v, count_diff_v, l1_loss_v))
 
                     self.sum_writer.add_summary(summ_v, i)
@@ -167,10 +171,27 @@ class NetFlow(object):
                     sf.save_model(sess, self.saver, self.model_params["model_dir"],i)
                     
         else:
-            for i in range(self.model_params["test_iter"]):
+            file_len = file_io.get_file_length(self.model_params["test_file_name"])
+            batch_size = self.model_params["batch_size"]
+            test_iter = int(file_len / batch_size) + 1
+            result_file_name = self.model_params["result_file_name"]
+            result_obj = ro.ResultObj(result_file_name)
+
+            for i in range(test_iter):
                 feed_dict = self.get_feed_dict(sess, is_train=False)
-                loss_v = sess.run(self.loss, feed_dict)
-                print(loss_v)
+                loss_v, count_v, label_count_v = sess.run([self.loss, self.count, 
+                            self.label_count], feed_dict)
+                count_v /= self.desmap_scale
+                label_count_v /= self.desmap_scale
+
+                file_line = [f.decode("utf-8").split(" ")[0] for f in self.file_line]
+                count_v = result_obj.float_to_str(count_v, "%.2f")
+                label_count_v = result_obj.float_to_str(label_count_v, "%.2f")
+                
+                result_obj.add_to_list(file_line, label_count_v, count_v)
+                print(file_line[0], count_v[0], label_count_v[0])
+
+            result_obj.save_to_file(True)
 
         coord.request_stop()
         coord.join(threads)

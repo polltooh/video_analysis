@@ -21,5 +21,5 @@ if __name__ == "__main__":
     train_file = file_list_to_train_list("../file_list/trancos_org_trainval.txt")
     test_file = file_list_to_train_list("../file_list/trancos_org_test.txt")
 
-    file_io.save_file(train_file, file_list_dir + save_train_file_name)
-    file_io.save_file(train_file, file_list_dir + save_test_file_name)
+    file_io.save_file(train_file, file_list_dir + save_train_file_name, True)
+    file_io.save_file(test_file, file_list_dir + save_test_file_name, True)
