@@ -142,27 +142,29 @@ class NetFlow(object):
                 feed_dict = self.get_feed_dict(sess, is_train=True)
                 #self.check_feed_dict(feed_dict)
 
-                _, loss_v = sess.run([self.train_op, 
-                                    self.loss], feed_dict)
+                _, tloss_v, tcount_diff_v = sess.run([self.train_op, 
+                                    self.loss, self.count_diff], feed_dict)
 
                 if i % self.model_params["test_per_iter"] == 0:
                     feed_dict = self.get_feed_dict(sess, is_train=False)
-                    l2_loss_v, summ_v, l1_loss_v, count_diff_v = \
-                                sess.run([self.l2_loss, \
-                                self.summ, self.l1_loss, self.count_diff], feed_dict)
-
-                    l1_loss_v /= self.desmap_scale
+                    loss_v, summ_v, count_diff_v = \
+                                sess.run([self.loss, \
+                                self.summ, self.count_diff], feed_dict)
+                    
+                    tcount_diff_v /= self.desmap_scale
                     count_diff_v /= self.desmap_scale
 
                     print("i: %d, train_loss: %.2f, test_loss: %.2f, "
-                                "count_diff: %.2f, l1_loss: %2f" %
-                          (i, loss_v, l2_loss_v, count_diff_v, l1_loss_v))
+                                "train_count_diff: %.2f, test_count_diff: %.2f" %
+                          (i, tloss_v, loss_v, tcount_diff_v, count_diff_v))
 
                     self.sum_writer.add_summary(summ_v, i)
-                    sf.add_value_sum(self.sum_writer, loss_v, "train_loss", i)
-                    sf.add_value_sum(self.sum_writer, l2_loss_v, "test_loss", i)
-                    sf.add_value_sum(self.sum_writer, l1_loss_v, "l1_loss", i)
-                    sf.add_value_sum(self.sum_writer, count_diff_v, "count_diff", i)
+                    sf.add_value_sum(self.sum_writer, tloss_v, "train_loss", i)
+                    sf.add_value_sum(self.sum_writer, loss_v, "test_loss", i)
+                    sf.add_value_sum(self.sum_writer, tcount_diff_v, 
+                                                "train_count_diff", i)
+                    sf.add_value_sum(self.sum_writer, count_diff_v, 
+                                                "test_count_diff", i)
                     #sf.add_value_sum(self.sum_writer, stage2_v, "stage2", i)
                     #sf.add_value_sum(self.sum_writer, stage3_v, "stage3", i)
 

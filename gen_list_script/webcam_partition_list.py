@@ -24,10 +24,11 @@ def save_file(file_list, file_name):
 def check_add_to_list(file_dict, file_list, file_name, full_name):
     if file_name in file_dict:
         file_list.append(full_name)
+    return file_list
 
 if __name__ == "__main__":
-    train_list = file_io.read_file("../file_list/train_list1.txt")
-    test_list = file_io.read_file("../file_list/test_list1.txt")
+    train_list = file_io.read_file("../file_list/train_list2.txt")
+    test_list = file_io.read_file("../file_list/test_list2.txt")
     full_list = train_list + test_list
 
     file_list_dir = "../file_list/"
