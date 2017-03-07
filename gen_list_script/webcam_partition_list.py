@@ -1,7 +1,7 @@
 from TensorflowToolbox.utility import file_io
 
 def get_file_dict():
-    file_dir = "/Users/Geoff/Documents/my_git/temp_data/WebCam/"
+    file_dir = "/media/dog/data/WebCamT_60000/train_test_separation/" 
 
     parkway_train_file = file_dir + "Parkway_Train.txt"
 
