@@ -154,9 +154,14 @@ class NetFlow(object):
                     tcount_diff_v /= self.desmap_scale
                     count_diff_v /= self.desmap_scale
 
-                    print("i: %d, train_loss: %.2f, test_loss: %.2f, "
-                                "train_count_diff: %.2f, test_count_diff: %.2f" %
-                          (i, tloss_v, loss_v, tcount_diff_v, count_diff_v))
+                    print_string = "i: %d, train_loss: %.2f, test_loss: %.2f, " \
+                                "train_count_diff: %.2f, test_count_diff: %.2f"%\
+                          (i, tloss_v, loss_v, tcount_diff_v, count_diff_v)
+
+                    print(print_string)
+                    file_io.save_string(print_string, 
+                            self.model_params["train_log_dir"] + 
+                            self.model_params["string_log_name"])
 
                     self.sum_writer.add_summary(summ_v, i)
                     sf.add_value_sum(self.sum_writer, tloss_v, "train_loss", i)

@@ -48,6 +48,7 @@ data_arg.mask.rcrop_size: [224, 224]
 
 train_file_name:../file_list/train_list1.txt
 test_file_name:../file_list/test_list1.txt
+result_file_name: ../results/results1.txt
 
 model_def_name: vgg_atrous_model2
 
@@ -56,6 +57,7 @@ max_training_iter:10
 test_per_iter:50
 save_per_iter: 200
 train_log_dir:logs/
+string_log_name: string_logs.txt
 model_dir:models/
 restore_model:False
 restore_model_name:None
