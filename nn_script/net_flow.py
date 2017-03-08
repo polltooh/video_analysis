@@ -100,8 +100,9 @@ class NetFlow(object):
 
         for key in feed_dict:
             data_list.append(feed_dict[key])
-        print(np.sum(data_list[1][0] > 0.1))
-        print(data_list[1][0].max())
+        #print(np.sum(data_list[1][0] > 0.1))
+        #print(data_list[1][0].max())
+        #print(data_list[0][0].shape)
         #cv2.imshow("image", data_list[0][0])
         #cv2.imshow("label", data_list[1][0] * 255)
         #cv2.imshow("mask", data_list[2][0])
