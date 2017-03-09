@@ -34,6 +34,7 @@ def gen_mask(mask_name):
 def gen_desmap(desmap_name):
     mat = sio.loadmat(desmap_name)
     desmap = mat["gtDensity"]
+    desmap = desmap.astype(np.float32)
     h, w = desmap.shape
     resized_desmap = cv2.resize(desmap, new_dsize)
     if np.sum(resized_desmap) == 0:
