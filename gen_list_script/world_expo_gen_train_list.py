@@ -35,11 +35,11 @@ if __name__ == "__main__":
             mask_name = mask_dir + img_name.split("/")[-1].split("-")[0] \
                         + "_mask_" + scale_str + ".npy"
 
-            if os.path.exists(label_name):
+            if not os.path.exists(label_name):
                 print(label_name, "is not exist")
                 exit(1)
 
-            if os.path.exists(mask_name):
+            if not os.path.exists(mask_name):
                 print(name_name, "is not exist")
                 exit(1)
 
