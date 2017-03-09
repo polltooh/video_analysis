@@ -9,6 +9,8 @@ mask_dir = "/media/dog/data/WorldExpo/mask/"
 desmap_dir = "/media/dog/data/WorldExpo/gtDensity/gtDensity/"
 img_dir = "/media/dog/data/WorldExpo/train_frame/"
 
+CV_VERSION = cv2.__version__.split(".")[0]
+
 dsize = (576, 720)
 new_dsize = (256, 256)
 
@@ -21,7 +23,12 @@ def gen_mask(mask_name):
     pts = np.array(mask_pts, np.int32)
     h, w = dsize 
     img = np.zeros((h, w), np.float32)
-    img = cv2.fillPoly(img, [pts], (1, 1))
+
+    if CV_VERSION == '3':
+        img = cv2.fillPoly(img, [pts], (1, 1))
+    elif CV_VERSION == '2':
+        cv2.fillPoly(img, [pts], (1, 1))
+
     img = cv2.resize(img, new_dsize, cv2.INTER_NEAREST)
     _, img = cv2.threshold(img, 0, 1, 0)
 
