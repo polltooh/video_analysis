@@ -82,9 +82,10 @@ if __name__ == "__main__":
 
         img_list = file_io.get_listfile(img_dir, ".jpg")
         for img_name in img_list:
-            img = gen_img(img_name)
-            new_img_name = img_name.replace(".jpg", "_" + scale_str + ".jpg")
-            cv2.imwrite(new_img_name, img)
+            if not img_name.endswith("_" + scale_str + ".jpg"):
+                img = gen_img(img_name)
+                new_img_name = img_name.replace(".jpg", "_" + scale_str + ".jpg")
+                cv2.imwrite(new_img_name, img)
 
 
 
