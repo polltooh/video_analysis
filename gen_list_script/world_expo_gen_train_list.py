@@ -32,7 +32,7 @@ if __name__ == "__main__":
             if not img_name.endswith("_" + scale_str + ".jpg"):
                 continue
             label_name = img_name.replace(img_dir, desmap_dir).replace(".jpg", ".npy")
-            mask_name = mask_dir + img_name.split("/")[-1].split("-")[0] \
+            mask_name = mask_dir + img_name.split("/")[-1][:6] \
                         + "_mask_" + scale_str + ".npy"
 
             if not os.path.exists(label_name):
