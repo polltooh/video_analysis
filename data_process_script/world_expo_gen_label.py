@@ -56,7 +56,7 @@ if __name__ == "__main__":
     for i in range(2):
         if i == 0:
             label_path = "/media/dog/data/WorldExpo/train_label/"
-            mask_dir = "/media/dog/data/WorldExpo/train_mask/"
+            mask_dir = "/media/dog/data/WorldExpo/mask/"
             desmap_dir = "/media/dog/data/WorldExpo/gtDensity/gtDensity/"
             img_dir = "/media/dog/data/WorldExpo/train_frame/"
         else:
