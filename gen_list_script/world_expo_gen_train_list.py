@@ -40,7 +40,7 @@ if __name__ == "__main__":
                 exit(1)
 
             if not os.path.exists(mask_name):
-                print(name_name, "is not exist")
+                print(mask_name, "is not exist")
                 exit(1)
 
             file_list.append(" ".join([img_name, label_name, mask_name]))
