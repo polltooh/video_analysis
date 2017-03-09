@@ -88,10 +88,3 @@ if __name__ == "__main__":
                 cv2.imwrite(new_img_name, img)
 
 
-
-
-
-
-
-
-
