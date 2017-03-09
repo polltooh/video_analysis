@@ -4,10 +4,7 @@ import scipy.io as sio
 import cv2
 
 #laebl_path = "/media/dog/data/WorldExpo/train_label/"
-label_path = "/media/dog/data/WorldExpo/test_label/"
-mask_dir = "/media/dog/data/WorldExpo/test_mask/"
-desmap_dir = "/media/dog/data/WorldExpo/test_gtDensity/test_gtDensity/"
-img_dir = "/media/dog/data/WorldExpo/test_frame/"
+
 
 CV_VERSION = cv2.__version__.split(".")[0]
 
@@ -56,26 +53,38 @@ def gen_img(img_name):
 
 
 if __name__ == "__main__":
-    label_list = file_io.get_dir_list(label_path)
-    scale_str = str(new_dsize[0])
-    for label_l in label_list:
-        mask_name = label_l + "/roi.mat"
-        new_name = mask_dir + '/' + label_l.split("/")[-1] + "_mask_" + \
-                        scale_str+ ".npy"
-        mask = gen_mask(mask_name)
-        mask.tofile(new_name)
-    
-    desmap_list = file_io.get_listfile(desmap_dir, ".mat")
-    for d_name in desmap_list:
-        desmap = gen_desmap(d_name)
-        new_name = d_name.replace(".jpg_gtDen.mat", "_" + scale_str + ".npy")
-        desmap.tofile(new_name)
+    for i in range(2):
+        if i == 0:
+            label_path = "/media/dog/data/WorldExpo/train_label/"
+            mask_dir = "/media/dog/data/WorldExpo/train_mask/"
+            desmap_dir = "/media/dog/data/WorldExpo/gtDensity/gtDensity/"
+            img_dir = "/media/dog/data/WorldExpo/train_frame/"
+        else:
+            label_path = "/media/dog/data/WorldExpo/test_label/"
+            mask_dir = "/media/dog/data/WorldExpo/test_mask/"
+            desmap_dir = "/media/dog/data/WorldExpo/test_gtDensity/test_gtDensity/"
+            img_dir = "/media/dog/data/WorldExpo/test_frame/"
 
-    img_list = file_io.get_listfile(img_dir, ".jpg")
-    for img_name in img_list:
-        img = gen_img(img_name)
-        new_img_name = img_name.replace(".jpg", "_" + scale_str + ".jpg")
-        cv2.imwrite(new_img_name, img)
+        label_list = file_io.get_dir_list(label_path)
+        scale_str = str(new_dsize[0])
+        for label_l in label_list:
+            mask_name = label_l + "/roi.mat"
+            new_name = mask_dir + '/' + label_l.split("/")[-1] + "_mask_" + \
+                            scale_str+ ".npy"
+            mask = gen_mask(mask_name)
+            mask.tofile(new_name)
+        
+        desmap_list = file_io.get_listfile(desmap_dir, ".mat")
+        for d_name in desmap_list:
+            desmap = gen_desmap(d_name)
+            new_name = d_name.replace(".jpg_gtDen.mat", "_" + scale_str + ".npy")
+            desmap.tofile(new_name)
+
+        img_list = file_io.get_listfile(img_dir, ".jpg")
+        for img_name in img_list:
+            img = gen_img(img_name)
+            new_img_name = img_name.replace(".jpg", "_" + scale_str + ".jpg")
+            cv2.imwrite(new_img_name, img)
 
 
 
