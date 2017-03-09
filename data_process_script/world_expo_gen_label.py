@@ -4,10 +4,10 @@ import scipy.io as sio
 import cv2
 
 #laebl_path = "/media/dog/data/WorldExpo/train_label/"
-label_path = "/media/dog/data/WorldExpo/train_label/"
-mask_dir = "/media/dog/data/WorldExpo/mask/"
-desmap_dir = "/media/dog/data/WorldExpo/gtDensity/gtDensity/"
-img_dir = "/media/dog/data/WorldExpo/train_frame/"
+label_path = "/media/dog/data/WorldExpo/test_label/"
+mask_dir = "/media/dog/data/WorldExpo/test_mask/"
+desmap_dir = "/media/dog/data/WorldExpo/test_gtDensity/test_gtDensity/"
+img_dir = "/media/dog/data/WorldExpo/test_frame/"
 
 CV_VERSION = cv2.__version__.split(".")[0]
 
@@ -29,7 +29,7 @@ def gen_mask(mask_name):
     elif CV_VERSION == '2':
         cv2.fillPoly(img, [pts], (1, 1))
 
-    img = cv2.resize(img, new_dsize, cv2.INTER_NEAREST)
+    img = cv2.resize(img, new_dsize,interpolation= cv2.INTER_NEAREST)
     _, img = cv2.threshold(img, 0, 1, 0)
 
     return img 
@@ -39,7 +39,10 @@ def gen_desmap(desmap_name):
     desmap = mat["gtDensity"]
     h, w = desmap.shape
     resized_desmap = cv2.resize(desmap, new_dsize)
-    scale = np.sum(desmap) / np.sum(resized_desmap)
+    if np.sum(resized_desmap) == 0:
+        scale = 1
+    else:
+        scale = np.sum(desmap) / np.sum(resized_desmap)
     resized_desmap *= scale
     #print(np.sum(desmap))
     #print(np.sum(resized_desmap))
