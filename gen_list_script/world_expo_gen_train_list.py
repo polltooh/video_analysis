@@ -47,6 +47,6 @@ if __name__ == "__main__":
     
     train_file_name = "../file_list/world_expo_train_list1.txt"
     test_file_name = "../file_list/world_expo_test_list1.txt"
-
     file_io.save_file(train_list, train_file_name, True)
+
     file_io.save_file(test_list, test_file_name, True)
