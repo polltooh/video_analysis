@@ -4,10 +4,10 @@ import scipy.io as sio
 import cv2
 
 #laebl_path = "/media/dog/data/WorldExpo/train_label/"
-label_path = "/Users/Geoff/Documents/my_git/temp_data/WorldExport/train_label/"
-mask_dir = "/Users/Geoff/Documents/my_git/temp_data/WorldExport/mask/"
-desmap_dir = "/Users/Geoff/Documents/my_git/temp_data/WorldExport/gtDensity/"
-img_dir = "/Users/Geoff/Documents/my_git/temp_data/WorldExport/train_frame/"
+label_path = "/media/dog/data/WorldExpo/train_label/"
+mask_dir = "/media/dog/data/WorldExpo/mask/"
+desmap_dir = "/media/dog/data/WorldExpo/gtDensity/gtDensity/"
+img_dir = "/media/dog/data/WorldExpo/train_frame/"
 
 dsize = (576, 720)
 new_dsize = (256, 256)
