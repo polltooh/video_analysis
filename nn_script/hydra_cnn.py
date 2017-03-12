@@ -78,12 +78,12 @@ class Model(ModelAbs):
         concat_feature = tf.concat(1, [stage_0, stage_1, stage_2])
         print(concat_feature)
 
-        fc6 = mf.fully_connected_layer(concat_feature, 512, wd, "fc6")
-        fc7 = mf.fully_connected_layer(fc6, 512, wd, "fc7")
-        fc8 = mf.fully_connected_layer(fc7, 324, wd, "fc8")
+        fc6 = mf.fully_connected_layer(concat_feature, 1024, wd, "fc6")
+        fc7 = mf.fully_connected_layer(fc6, 1024, wd, "fc7")
+        fc8 = mf.fully_connected_layer(fc7, 1024, wd, "fc8")
         
         batch_size = model_params["batch_size"]
-        output = tf.expand_dims(tf.reshape(fc8, [batch_size, 18, 18]), 3)
+        output = tf.expand_dims(tf.reshape(fc8, [batch_size, 32, 32]), 3)
         print(output)
 
         l_ph_r = model_params["label_ph_row"]
