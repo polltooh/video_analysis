@@ -17,8 +17,8 @@ def name_to_file_list(file_name):
         infer_list.append(infer_name)
         mask_list.append(mask_name)
         file_list[i] = f
-    
-    return file_list, infer_list, mask_name
+
+    return file_list, infer_list, mask_list
 
 def copyfile(file_list, src_path, des_path):
     for f in file_list:
