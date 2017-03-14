@@ -65,12 +65,12 @@ class Model(ModelAbs):
         stage_0 = self._single_hydra_cnn(image_ph_0, model_params, 0)
         print(stage_0)
 
-        image_ph_1 = iuf.batch_center_crop_frac(image_ph_0, 0.75)
+        image_ph_1 = iuf.batch_center_crop_frac(image_ph_0, 0.9)
         image_ph_1 = tf.image.resize_images(image_ph_1, [72, 72])
         stage_1 = self._single_hydra_cnn(image_ph_1, model_params, 1)
         print(stage_1)
 
-        image_ph_2 = iuf.batch_center_crop_frac(image_ph_0, 0.5)
+        image_ph_2 = iuf.batch_center_crop_frac(image_ph_0, 0.8)
         image_ph_2 = tf.image.resize_images(image_ph_2, [72, 72])
         stage_2 = self._single_hydra_cnn(image_ph_2, model_params, 2)
         print(stage_2)
