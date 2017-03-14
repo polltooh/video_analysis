@@ -26,7 +26,7 @@ def cen_crop(input_image, dsize):
     input_image = input_image[offset_h:offset_h + dsize[0], offset_w:offset_w+dsize[1], :]
     return input_image
 
-desmap_dir = "/Users/Geoff/Documents/my_git/data/desmap"
+desmap_dir = "/media/dog/data/WebCamT_60000_desmap"
 cam_list = file_io.get_dir_list(desmap_dir)
 
 for cam_dir in cam_list:
