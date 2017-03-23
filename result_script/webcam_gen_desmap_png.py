@@ -26,7 +26,7 @@ def cen_crop(input_image, dsize):
     input_image = input_image[offset_h:offset_h + dsize[0], offset_w:offset_w+dsize[1], :]
     return input_image
 
-desmap_dir = "/media/dog/data/WebCamT_60000_desmap"
+desmap_dir = "/media/dog/data/WebCamT_60000"
 cam_list = file_io.get_dir_list(desmap_dir)
 
 for cam_dir in cam_list:
@@ -42,9 +42,11 @@ for cam_dir in cam_list:
         #mask = np.tile(mask, (1,1,3))
 
         for img_name in img_list:
-            img = cv2.imread(img_name)
             desmap_name = img_name.replace(".jpg", ".infer_desmap")
+            if not os.path.exists(desmap_name):
+                continue
             desmap = opencv_plot(desmap_name, mask)
+            img = cv2.imread(img_name)
 
             img = cen_crop(img, (224,224))
             combine_img = np.hstack((img, desmap))
