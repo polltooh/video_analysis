@@ -35,6 +35,8 @@ for cam_dir in cam_list:
     for video in video_list:
         img_list = file_io.get_listfile(video, "jpg")
         mask_name = video+ "_msk_256.npy"
+        if not os.path.exists(mask_name):
+            continue
         mask = np.fromfile(mask_name, np.float32)
         mask = np.expand_dims(np.reshape(mask, (256, 256)), 2)
         mask = cen_crop(mask, (224,224))
