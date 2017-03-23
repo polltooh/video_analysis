@@ -8,7 +8,7 @@ def norm_image(img):
 
 def opencv_plot(desmap_name, mask):
     desmap = np.fromfile(desmap_name, np.float32)
-    desmap = np.reshape(desmap, (114, 114))
+    desmap = np.reshape(desmap, (224, 224))
     desmap *= 30.0
     desmap[desmap >1 ] = 1
     desmap *= mask
@@ -34,10 +34,10 @@ for cam_dir in cam_list:
     video_list = file_io.get_dir_list(cam_dir)
     for video in video_list:
         img_list = file_io.get_listfile(video, "jpg")
-        mask_name = video+ "_msk_128.npy"
+        mask_name = video+ "_msk_256.npy"
         mask = np.fromfile(mask_name, np.float32)
-        mask = np.expand_dims(np.reshape(mask, (128, 128)), 2)
-        mask = cen_crop(mask, (114,114))
+        mask = np.expand_dims(np.reshape(mask, (256, 256)), 2)
+        mask = cen_crop(mask, (224,224))
         mask = np.squeeze(mask)
         #mask = np.tile(mask, (1,1,3))
 
@@ -46,7 +46,7 @@ for cam_dir in cam_list:
             desmap_name = img_name.replace(".jpg", ".infer_desmap")
             desmap = opencv_plot(desmap_name, mask)
 
-            img = cen_crop(img, (114,114))
+            img = cen_crop(img, (224,224))
             combine_img = np.hstack((img, desmap))
             save_name = img_name.replace(".jpg", "_combine.png")
             cv2.imwrite(save_name, combine_img)
