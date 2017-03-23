@@ -1,6 +1,7 @@
 from TensorflowToolbox.utility import file_io
 import cv2
 import numpy as np
+import os
 
 def norm_image(img):
     img = (img - np.min(img)) / (np.max(img) - np.min(img))
