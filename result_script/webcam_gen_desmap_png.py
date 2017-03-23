@@ -34,7 +34,7 @@ for cam_dir in cam_list:
     #cam_dir = "/Users/Geoff/Documents/my_git/data/desmap/253/"
     video_list = file_io.get_dir_list(cam_dir)
     for video in video_list:
-        img_list = file_io.get_listfile(video, "jpg")
+        img_list = file_io.get_listfile(video, "_256.jpg")
         mask_name = video+ "_msk_256.npy"
         if not os.path.exists(mask_name):
             continue
