@@ -9,7 +9,12 @@ def norm_image(img):
 
 def opencv_plot(desmap_name, mask):
     desmap = np.fromfile(desmap_name, np.float32)
-    desmap = np.reshape(desmap, (256, 256))
+    #desmap = np.reshape(desmap, (256, 256))
+
+    desmap = np.expand_dims(np.reshape(desmap, (256, 256)), 2)
+    desmap = cen_crop(desmap, (227,227))
+    desmap = np.squeeze(desmap)
+
     desmap *= 30.0
     desmap[desmap >1 ] = 1
     desmap *= mask
@@ -50,7 +55,6 @@ for cam_dir in cam_list:
                 continue
             desmap_name = img_name.replace(".jpg", ".desmap")
             desmap = opencv_plot(desmap_name, mask)
-            desmap= cen_crop(desmap, (227,227))
             img = cv2.imread(img_name)
 
             img = cen_crop(img, (227,227))
