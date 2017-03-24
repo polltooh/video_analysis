@@ -9,7 +9,7 @@ def norm_image(img):
 
 def opencv_plot(desmap_name, mask):
     desmap = np.fromfile(desmap_name, np.float32)
-    desmap = np.reshape(desmap, (227, 227))
+    desmap = np.reshape(desmap, (256, 256))
     desmap *= 30.0
     desmap[desmap >1 ] = 1
     desmap *= mask
