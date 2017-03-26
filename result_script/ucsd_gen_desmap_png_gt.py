@@ -40,7 +40,7 @@ mask = cen_crop(mask, (224,224))
 mask = np.squeeze(mask)
 
 for des_name in desmap_list:
-    des_gt_name = des_name.replace(".infer_desmap", ".desmap")
+    des_gt_name = des_name.replace(".infer_desmap", ".desmap").replace("images","gtDensities")
     desmap = opencv_plot(des_gt_name, mask)
 
     img_name = des_name.replace(".infer_desmap", ".jpg")
