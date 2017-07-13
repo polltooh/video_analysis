@@ -33,12 +33,7 @@ class NetFlow(object):
 
         self.model = model(self.data_ph, model_params)
         self.loss = self.model.get_loss()
-        self.l2_loss = self.model.get_l2_loss()
-        self.l1_loss = self.model.get_l1_loss()
-        self.count_diff = self.model.get_count_diff()
-        self.count = self.model.get_count()
-        self.label_count = self.model.get_label_count()
-        self.train_op = self.model.get_train_op()
+        self.train_op = mt.model_trainer(self.model, model_params['num_gpus'])
 
     @staticmethod
     def check_model_params(model_params):

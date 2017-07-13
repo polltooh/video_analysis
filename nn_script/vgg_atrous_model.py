@@ -1,17 +1,20 @@
-from TensorflowToolbox.model_flow.model_abs import ModelAbs
-from TensorflowToolbox.model_flow import model_func as mf
 import tensorflow as tf
 
-
-# from traffic_data_ph import data_ph
+from TensorflowToolbox.model_flow.model_abs import ModelAbs
+from TensorflowToolbox.model_flow import model_func as mf
+from TensorflowToolbox.model_flow import model_trainer as mt
 
 class Model(ModelAbs):
     def __init__(self, data_ph, model_params):
-        self.model_infer(data_ph, model_params)
-        self.model_loss(data_ph, model_params)
-        self.model_mini(model_params)
+        self.data_ph = data_ph
+        self.model_params = model_params
+        self.model_infer()
+        self.model_loss()
+        self.model_optimizer()
 
-    def model_infer(self, data_ph, model_params):
+    def model_infer(self):
+        data_ph = self.data_ph
+        model_params = self.model_params
         input_ph = data_ph.get_input()
         leaky_param = model_params["leaky_param"]
         wd = model_params["weight_decay"]
@@ -96,43 +99,27 @@ class Model(ModelAbs):
             hypercolumn, [1, 1, c_dimension, 1], [1, 1],
             "SAME", wd, "conv6"), leaky_param)
 
-        tf.add_to_collection("image_to_write", data_ph.get_input())
-        tf.add_to_collection("image_to_write", data_ph.get_label())
-        tf.add_to_collection("image_to_write", data_ph.get_mask()) 
-        tf.add_to_collection("image_to_write", conv6) 
+        # tf.add_to_collection("image_to_write", data_ph.get_input())
+        # tf.add_to_collection("image_to_write", data_ph.get_label())
+        # tf.add_to_collection("image_to_write", data_ph.get_mask()) 
+        # tf.add_to_collection("image_to_write", conv6) 
 
-        self.predict_list = list()
-        self.predict_list.append(conv6)
+        # self.predict_list = list()
+        # self.predict_list.append(conv6)
+        return conv6
 
     def pack_tensor_list(self, tensor_list):
         hypercolumn = tf.concat(3, tensor_list)
 
         return hypercolumn
 
-    def resize_deconv(self, input_tensor, desire_shape,
-                      output_channel, wd, layer_name):
-        b, w, h, c = input_tensor.get_shape().as_list()
-        with tf.variable_scope(layer_name):
-            if w != desire_shape[0] or h != desire_shape[1]:
-                input_tensor = tf.image.resize_images(input_tensor,
-                                                      [desire_shape[0],
-                                                       desire_shape[1]])
-
-            deconv = mf.deconvolution_2d_layer(input_tensor,
-                                               [3, 3, output_channel, c],
-                                               [1, 1],
-                                               [b, desire_shape[0],
-                                                desire_shape[1],
-                                                output_channel],
-                                               "SAME", wd, 'deconv')
-
-        return deconv
-
     def filter_mask(self, tensor, mask):
         tensor = tensor * mask
         return tensor
 
-    def model_loss(self, data_ph, model_params):
+    def model_loss(self, nn_output):
+        data_ph = self.data_ph
+        model_params = self.model_params
         label = data_ph.get_label()
         mask = data_ph.get_mask()
 
@@ -146,22 +133,18 @@ class Model(ModelAbs):
 
         self.l2_loss = tf.add_n(l2_loss_list)
         self.loss = tf.add_n(tf.get_collection('losses'), name='total_loss')
+        return loss
 
-    def model_mini(self, model_params):
-        optimizer = tf.train.AdamOptimizer(
-            model_params["init_learning_rate"],
-            epsilon=1.0)
-        self.train_op = optimizer.minimize(self.loss)
+    def model_optimizer(self, model_params)
+        self.optimizer = tf.train.AdamOptimizer(
+                    model_params["init_learning_rate"],
+                    epsilon=1.0)
 
-    def get_train_op(self):
-        return self.train_op
+    def get_opt(self):
+        return self.optimizer
 
     def get_loss(self):
         return self.loss
-
-    def get_l2_loss(self):
-        return self.l2_loss
-
 
 if __name__ == "__main__":
     pass
