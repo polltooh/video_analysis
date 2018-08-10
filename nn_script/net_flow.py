@@ -3,7 +3,7 @@ from traffic_data_input import DataInput
 from TensorflowToolbox.utility import file_io
 import tensorflow as tf
 from TensorflowToolbox.model_flow import save_func as sf
-from TensorflowToolbox.utility import utility_func as uf 
+from TensorflowToolbox.utility import utility_func as uf
 from TensorflowToolbox.utility import result_obj as ro
 import cv2
 import numpy as np
@@ -14,7 +14,7 @@ TF_VERSION = tf.__version__.split(".")[1]
 
 class NetFlow(object):
     def __init__(self, model_params, load_train, load_test):
-        
+
         self.load_train = load_train
         self.load_test = load_test
         self.model_params = model_params
@@ -57,7 +57,7 @@ class NetFlow(object):
                 self.test_data_input.get_label(),
                 self.test_data_input.get_mask(),
                 self.test_data_input.get_file_line()])
-        
+
         feed_dict[self.data_ph.get_input()] = input_v
         feed_dict[self.data_ph.get_label()] = label_v * self.desmap_scale
         feed_dict[self.data_ph.get_mask()] = mask_v
@@ -85,9 +85,7 @@ class NetFlow(object):
         feed_dict[self.data_ph.get_label()] = label_v * self.desmap_scale
         feed_dict[self.data_ph.get_mask()] = mask_v
 
-
         return feed_dict
-
 
     @staticmethod
     def check_feed_dict(feed_dict):
@@ -96,12 +94,12 @@ class NetFlow(object):
         for key in feed_dict:
             data_list.append(feed_dict[key])
         #print(np.sum(data_list[1][0] > 0.1))
-        #print(data_list[1][0].max())
-        #print(data_list[0][0].shape)
+        # print(data_list[1][0].max())
+        # print(data_list[0][0].shape)
         #cv2.imshow("image", data_list[0][0])
         #cv2.imshow("label", data_list[1][0] * 255)
         #cv2.imshow("mask", data_list[2][0])
-        #cv2.waitKey(0)
+        # cv2.waitKey(0)
 
     def init_var(self, sess):
         sf.add_train_var()
@@ -111,14 +109,14 @@ class NetFlow(object):
 
         if TF_VERSION > '11':
             if self.load_train:
-                self.sum_writer = tf.summary.FileWriter(self.model_params["train_log_dir"], 
-                                         sess.graph)
+                self.sum_writer = tf.summary.FileWriter(self.model_params["train_log_dir"],
+                                                        sess.graph)
             self.summ = tf.summary.merge_all()
             init_op = tf.global_variables_initializer()
         else:
             if self.load_train:
                 self.sum_writer = tf.train.SummaryWriter(self.model_params["train_log_dir"],
-                                         sess.graph)
+                                                         sess.graph)
             self.summ = tf.merge_all_summaries()
             init_op = tf.initialize_all_variables()
 
@@ -126,11 +124,11 @@ class NetFlow(object):
 
         if self.model_params["restore_model"]:
             sf.restore_model(sess, self.saver, self.model_params["model_dir"],
-                            self.model_params["restore_model_name"])
+                             self.model_params["restore_model_name"])
 
     def mainloop(self):
         config_proto = uf.define_graph_config(self.model_params["gpu_fraction"])
-        sess = tf.Session(config = config_proto)
+        sess = tf.Session(config=config_proto)
         self.init_var(sess)
         coord = tf.train.Coordinator()
         threads = tf.train.start_queue_runners(coord=coord, sess=sess)
@@ -138,44 +136,44 @@ class NetFlow(object):
         if self.load_train:
             for i in range(self.model_params["max_training_iter"]):
                 feed_dict = self.get_feed_dict(sess, is_train=True)
-                #self.check_feed_dict(feed_dict)
+                # self.check_feed_dict(feed_dict)
 
-                _, tloss_v, tcount_diff_v = sess.run([self.train_op, 
-                                    self.loss, self.count_diff], feed_dict)
+                _, tloss_v, tcount_diff_v = sess.run([self.train_op,
+                                                      self.loss, self.count_diff], feed_dict)
 
                 if i % self.model_params["test_per_iter"] == 0:
                     feed_dict = self.get_feed_dict(sess, is_train=False)
                     loss_v, summ_v, count_diff_v = \
-                                sess.run([self.loss, \
-                                self.summ, self.count_diff], feed_dict)
-                    
+                        sess.run([self.loss,
+                                  self.summ, self.count_diff], feed_dict)
+
                     tcount_diff_v /= self.desmap_scale
                     count_diff_v /= self.desmap_scale
 
                     print_string = "i: %d, train_loss: %.2f, test_loss: %.2f, " \
-                                "train_count_diff: %.2f, test_count_diff: %.2f"%\
-                          (i, tloss_v, loss_v, tcount_diff_v, count_diff_v)
+                        "train_count_diff: %.2f, test_count_diff: %.2f" %\
+                        (i, tloss_v, loss_v, tcount_diff_v, count_diff_v)
 
                     print(print_string)
-                    file_io.save_string(print_string, 
-                            self.model_params["train_log_dir"] + 
-                            self.model_params["string_log_name"])
+                    file_io.save_string(print_string,
+                                        self.model_params["train_log_dir"] +
+                                        self.model_params["string_log_name"])
 
                     self.sum_writer.add_summary(summ_v, i)
                     sf.add_value_sum(self.sum_writer, tloss_v, "train_loss", i)
                     sf.add_value_sum(self.sum_writer, loss_v, "test_loss", i)
-                    sf.add_value_sum(self.sum_writer, tcount_diff_v, 
-                                                "train_count_diff", i)
-                    sf.add_value_sum(self.sum_writer, count_diff_v, 
-                                                "test_count_diff", i)
+                    sf.add_value_sum(self.sum_writer, tcount_diff_v,
+                                     "train_count_diff", i)
+                    sf.add_value_sum(self.sum_writer, count_diff_v,
+                                     "test_count_diff", i)
                     #sf.add_value_sum(self.sum_writer, stage2_v, "stage2", i)
                     #sf.add_value_sum(self.sum_writer, stage3_v, "stage3", i)
 
-                if i != 0 and (i % self.model_params["save_per_iter"] == 0 or \
-                                i == self.model_params["max_training_iter"] - 1):
-                    sf.save_model(sess, self.saver, self.model_params["model_dir"],i)
-                    
-        else:
+                if i != 0 and (i % self.model_params["save_per_iter"] == 0 or
+                               i == self.model_params["max_training_iter"] - 1):
+                    sf.save_model(sess, self.saver, self.model_params["model_dir"], i)
+
+        elif self.load_test:
             file_len = file_io.get_file_length(self.model_params["test_file_name"])
             batch_size = self.model_params["batch_size"]
             test_iter = int(file_len / batch_size) + 1
@@ -184,15 +182,15 @@ class NetFlow(object):
 
             for i in range(test_iter):
                 feed_dict = self.get_feed_dict(sess, is_train=False)
-                loss_v, count_v, label_count_v = sess.run([self.loss, self.count, 
-                            self.label_count], feed_dict)
+                loss_v, count_v, label_count_v = sess.run([self.loss, self.count,
+                                                           self.label_count], feed_dict)
                 count_v /= self.desmap_scale
                 label_count_v /= self.desmap_scale
 
                 file_line = [f.decode("utf-8").split(" ")[0] for f in self.file_line]
                 count_v = result_obj.float_to_str(count_v, "%.2f")
                 label_count_v = result_obj.float_to_str(label_count_v, "%.2f")
-                
+
                 result_obj.add_to_list(file_line, label_count_v, count_v)
                 print(file_line[0], count_v[0], label_count_v[0])
 
