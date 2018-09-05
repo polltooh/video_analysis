@@ -20,7 +20,7 @@ class DataInput(DataInputAbs):
             file_name = model_params["test_file_name"]
             phase = "test"
 
-        with tf.variable_scope("%s_data_loading"%phase):
+        with tf.variable_scope("%s_data_loading" % phase):
             self.file_queue = data_reader.file_queue(file_name, is_train)
             self.load_data(model_params, arg_dict)
 
@@ -100,29 +100,29 @@ class DataInput(DataInputAbs):
 if __name__ == "__main__":
     """ example of running the code"""
     model_params = dict()
-    model_params["feature_row"] = 256
-    model_params["feature_col"] = 256
+    model_params["feature_row"] = 128
+    model_params["feature_col"] = 128
     model_params["feature_cha"] = 3
 
-    model_params["label_row"] = 256
-    model_params["label_col"] = 256
+    model_params["label_row"] = 128
+    model_params["label_col"] = 128
     model_params["label_cha"] = 1
 
-    model_params["mask_row"] = 256
-    model_params["mask_col"] = 256
+    model_params["mask_row"] = 128
+    model_params["mask_col"] = 128
     model_params["mask_cha"] = 1
 
     model_params["batch_size"] = 2
 
-    model_params["data_arg.rflip_leftright"] = True
-    model_params["data_arg.rflip_updown"] = False
-    model_params["data_arg.rcrop_size"] = [200, 200]
+    model_params["data_arg.feature.rflip_leftright"] = True
+    model_params["data_arg.feature.rflip_updown"] = False
+    model_params["data_arg.feature.rcrop_size"] = [200, 200]
 
     # model_params["label_arg.rflip_leftright"] = True
     # model_params["label_arg.rflip_updown"] = True
     # model_params["label_arg.rcrop_size"] = [200, 200, 1]
 
-    model_params["train_file_name"] = "../file_list/test_file2.txt"
+    model_params["train_file_name"] = "../file_list/downtown_test_list_cut.txt"
 
     # arg_dict_list = [data_arg_dict, label_arg_dict]
 

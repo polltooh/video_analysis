@@ -17,6 +17,7 @@ class DataInput(DataInputAbs):
 
     def load_data(self):
         data_type_list = [tf.constant([], tf.string),
+                          tf.constant([], tf.string),
                           tf.constant([], tf.string)]
         line_reader = tf.TextLineReader()
         key, next_line = line_reader.read(self.data_filenamequeue)
@@ -26,7 +27,7 @@ class DataInput(DataInputAbs):
 
 
 if __name__ == "__main__":
-    test_input = DataInput("../file_list/test_file.txt")
+    test_input = DataInput("../file_list/downtown_test_list_cut.txt")
     sess = tf.Session()
     coord = tf.train.Coordinator()
     threads = tf.train.start_queue_runners(coord=coord, sess=sess)

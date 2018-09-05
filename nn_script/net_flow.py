@@ -2,6 +2,8 @@ from traffic_data_ph import DataPh
 from traffic_data_input import DataInput
 from TensorflowToolbox.utility import file_io
 import tensorflow as tf
+
+from TensorflowToolbox.model_flow import model_trainer as mt
 from TensorflowToolbox.model_flow import save_func as sf
 from TensorflowToolbox.utility import utility_func as uf
 from TensorflowToolbox.utility import result_obj as ro
@@ -30,10 +32,11 @@ class NetFlow(object):
         self.data_ph = DataPh(model_params)
         model = file_io.import_module_class(model_params["model_def_name"],
                                             "Model")
-
         self.model = model(self.data_ph, model_params)
+        # self.loss = self.model.get_loss()
+        self.count_diff = self.model.get_count_diff()
         self.loss = self.model.get_loss()
-        self.train_op = mt.model_trainer(self.model, model_params['num_gpus'])
+        self.train_op = self.model.get_train_op()
 
     @staticmethod
     def check_model_params(model_params):
@@ -87,20 +90,6 @@ class NetFlow(object):
 
         return feed_dict
 
-    @staticmethod
-    def check_feed_dict(feed_dict):
-        data_list = list()
-
-        for key in feed_dict:
-            data_list.append(feed_dict[key])
-        #print(np.sum(data_list[1][0] > 0.1))
-        # print(data_list[1][0].max())
-        # print(data_list[0][0].shape)
-        #cv2.imshow("image", data_list[0][0])
-        #cv2.imshow("label", data_list[1][0] * 255)
-        #cv2.imshow("mask", data_list[2][0])
-        # cv2.waitKey(0)
-
     def init_var(self, sess):
         sf.add_train_var()
         sf.add_loss()
@@ -137,7 +126,6 @@ class NetFlow(object):
             for i in range(self.model_params["max_training_iter"]):
                 feed_dict = self.get_feed_dict(sess, is_train=True)
                 # self.check_feed_dict(feed_dict)
-
                 _, tloss_v, tcount_diff_v = sess.run([self.train_op,
                                                       self.loss, self.count_diff], feed_dict)
 

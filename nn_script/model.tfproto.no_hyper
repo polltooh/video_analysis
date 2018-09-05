@@ -1,19 +1,19 @@
 # batch size
 batch_size: 2
 
-# feature dimemtion for reading the image
+# feature dimension for reading the image
 feature_row: 256
 feature_col: 256
 feature_ph_row: 224
 feature_ph_col: 224
 feature_cha: 3
 
-# the croped image dimention as the input for the network
+# the cropped image dimension as the input for the network
 
 label_row: 256
 label_col: 256
 
-# the croped image size as the input for the network
+# the cropped image size as the input for the network
 label_ph_row: 224
 label_ph_col: 224
 
@@ -27,14 +27,18 @@ mask_cha: 1
 
 desmap_scale: 100
 
-leaky_param: 0.01
-weight_decay: 0.0004
+leaky_param:0.01
+weight_decay:0.0004
 
 data_arg.feature.rflip_leftright: True
 data_arg.feature.rcrop_size: [224, 224]
-data_arg.feature.rbright_max: 0.2
-data_arg.feature.rcontrast_lower: 0.5
-data_arg.feature.rcontrast_upper: 1.5
+data_arg.feature.rbright_max:0.2
+data_arg.feature.rcontrast_lower:0.5
+data_arg.feature.rcontrast_upper:1.5
+#data_arg.feature.rhue_max:0.2
+#data_arg.feature.rsat_upper:1.5
+#data_arg.feature.rsat_lower:0.5
+
 
 data_arg.label.rflip_leftright: True
 data_arg.label.rcrop_size: [224, 224]
@@ -42,23 +46,23 @@ data_arg.label.rcrop_size: [224, 224]
 data_arg.mask.rflip_leftright: True
 data_arg.mask.rcrop_size: [224, 224]
 
-train_file_name: ../file_list/downtown_train_list_cut.txt
-test_file_name: ../file_list/downtown_test_list_cut.txt
+train_file_name:../file_list/train_list1.txt
+test_file_name:../file_list/test_list1.txt
 result_file_name: ../results/results1.txt
 
-model_def_name: vgg_atrous_model2
+model_def_name: vgg_atrous_model2_without_hyper
 
 init_learning_rate: 0.0001
-max_training_iter: 10
-test_per_iter: 50
+max_training_iter:10
+test_per_iter:50
 save_per_iter: 200
-train_log_dir: logs/
+train_log_dir:logs/
 string_log_name: string_logs.txt
-model_dir: models/
-restore_model: False
-restore_model_name: None
+model_dir:models/
+restore_model:False
+restore_model_name:None
 use_da: False
 
 # define the fraction of gpu
-num_gpus: 0
 gpu_fraction: 0.2
+
