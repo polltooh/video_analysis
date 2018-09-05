@@ -5,7 +5,8 @@ import tensorflow as tf
 class DataPh(DataPhAbs):
     def __init__(self, model_params):
         self.input_ph = tf.placeholder(tf.float32, shape=[
-            model_params["batch_size"],
+            # model_params["batch_size"],
+            None,
             model_params["feature_ph_row"],
             model_params["feature_ph_col"],
             model_params["feature_cha"]],
@@ -13,7 +14,8 @@ class DataPh(DataPhAbs):
                                        )
 
         self.label_ph = tf.placeholder(tf.float32, shape=[
-            model_params["batch_size"],
+            # model_params["batch_size"],
+            None,
             model_params["label_ph_row"],
             model_params["label_ph_col"],
             model_params["label_cha"]],
@@ -21,7 +23,8 @@ class DataPh(DataPhAbs):
                                        )
 
         self.mask_ph = tf.placeholder(tf.float32, shape=[
-            model_params["batch_size"],
+            # model_params["batch_size"],
+            None,
             model_params["mask_ph_row"],
             model_params["mask_ph_col"],
             model_params["mask_cha"]],
@@ -30,7 +33,8 @@ class DataPh(DataPhAbs):
 
         # Add da loss weight
         self.da_label_ph = tf.placeholder(tf.float32, shape=[
-            model_params["batch_size"],
+            # model_params["batch_size"],
+            None,
             model_params["label_ph_row"],
             model_params["label_ph_col"],
             model_params["label_cha"]],
